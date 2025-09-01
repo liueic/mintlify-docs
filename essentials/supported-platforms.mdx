@@ -1,0 +1,182 @@
+---
+title: "支持的平台"
+description: "AI Gateway 支持的主流AI平台详细介绍"
+---
+
+## 支持的AI平台
+
+AI Gateway 目前支持以下主流AI平台，每个平台都有其独特的特性和优势。通过统一的接口，您可以轻松切换不同的平台，选择最适合您需求的AI服务。
+
+## FastGPT Agent
+
+FastGPT 是一个功能强大的AI应用开发平台，提供完整的RAG（检索增强生成）支持。
+
+### 核心特性
+
+- **完整的RAG支持** - 支持知识库检索和引用
+- **多模态输入** - 支持文本、图片、文档等多种输入格式
+- **对话上下文管理** - 支持多轮对话和上下文保持
+- **知识库集成** - 可以连接自定义知识库进行检索
+
+### 环境变量配置
+
+```bash
+# FastGPT配置
+FASTGPT_BASE_URL=https://your-fastgpt-instance.com
+FASTGPT_API_KEY=your-api-key
+FASTGPT_APP_ID=your-app-id
+```
+
+### 使用示例
+
+```bash
+curl -X POST 'http://localhost:3000/api/v1/chat' \
+  -H 'Content-Type: application/json' \
+  -H 'agent: fastgpt' \
+  -d '{
+    "query": "你好，请介绍一下胰腺癌的基本知识",
+    "user": "test_user",
+    "stream": false,
+    "detail": false
+  }'
+```
+
+### 文件上传支持
+
+```bash
+curl -X POST 'http://localhost:3000/api/v1/upload' \
+  -H 'agent: fastgpt' \
+  -F 'file=@document.pdf' \
+  -F 'created_by=test_user'
+```
+
+<Card
+  title="FastGPT详细配置"
+  icon="cog"
+  href="/essentials/fastgpt-config"
+>
+  了解FastGPT的详细配置选项和最佳实践
+</Card>
+
+## Dify Agent
+
+Dify 是一个开源的LLM应用开发平台，提供强大的工作流和对话管理功能。
+
+### 核心特性
+
+- **工作流管理** - 支持复杂的AI工作流设计
+- **对话管理** - 支持变量替换和上下文管理
+- **流式响应** - 支持流式和非流式响应模式
+- **文件处理** - 支持文件上传和处理
+
+### 环境变量配置
+
+```bash
+# Dify配置
+DIFY_BASE_URL=https://your-dify-instance.com
+DIFY_API_KEY=your-api-key
+```
+
+### 使用示例
+
+```bash
+curl -X POST 'http://localhost:3000/api/v1/chat' \
+  -H 'Content-Type: application/json' \
+  -H 'agent: dify' \
+  -d '{
+    "query": "请分析这个文档",
+    "user": "test_user",
+    "conversation_id": "conv_123",
+    "stream": false
+  }'
+```
+
+<Card
+  title="Dify详细配置"
+  icon="cog"
+  href="/essentials/dify-config"
+>
+  了解Dify的详细配置选项和工作流设计
+</Card>
+
+## Coze Agent
+
+Coze 是字节跳动推出的AI Bot开发平台，支持国内和海外版本。
+
+### 核心特性
+
+- **Bot服务** - 基于Coze平台的Bot服务
+- **多版本支持** - 支持国内和海外版本
+- **流式对话** - 支持流式和非流式对话
+- **多轮对话** - 支持多轮对话上下文管理
+
+### 环境变量配置
+
+```bash
+# Coze配置
+COZE_API_TOKEN=your-api-token
+COZE_BOT_ID=your-bot-id
+COZE_BASE_URL=https://api.coze.cn  # 可选，默认为国内版
+```
+
+### 使用示例
+
+```bash
+curl -X POST 'http://localhost:3000/api/v1/chat' \
+  -H 'Content-Type: application/json' \
+  -H 'agent: coze' \
+  -d '{
+    "query": "你好，请介绍一下自己",
+    "user": "test_user",
+    "conversation_id": "conv_123",
+    "stream": false
+  }'
+```
+
+<Card
+  title="Coze详细配置"
+  icon="cog"
+  href="/essentials/coze-config"
+>
+  了解Coze的详细配置选项和Bot开发
+</Card>
+
+## 平台对比
+
+| 特性 | FastGPT | Dify | Coze |
+|------|---------|------|------|
+| RAG支持 | ✅ 完整支持 | ✅ 支持 | ❌ 不支持 |
+| 工作流 | ❌ 不支持 | ✅ 完整支持 | ❌ 不支持 |
+| 多模态 | ✅ 支持 | ✅ 支持 | ✅ 支持 |
+| 流式响应 | ✅ 支持 | ✅ 支持 | ✅ 支持 |
+| 开源 | ❌ 闭源 | ✅ 开源 | ❌ 闭源 |
+| 部署方式 | 云服务/自建 | 云服务/自建 | 云服务 |
+
+## 选择建议
+
+### 选择FastGPT的场景
+- 需要强大的RAG功能和知识库检索
+- 需要处理大量文档和知识库
+- 需要多模态输入支持
+
+### 选择Dify的场景
+- 需要复杂的工作流设计
+- 需要变量替换和上下文管理
+- 需要开源解决方案
+
+### 选择Coze的场景
+- 需要快速构建Bot应用
+- 需要国内服务支持
+- 需要简单的对话功能
+
+## 扩展新平台
+
+AI Gateway 采用适配器模式设计，可以轻松扩展支持新的AI平台。
+
+<Card
+  title="开发新Agent"
+  icon="plus"
+  href="/essentials/agent-development"
+>
+  了解如何为AI Gateway添加新的AI平台支持
+</Card>

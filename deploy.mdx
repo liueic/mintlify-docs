@@ -1,0 +1,261 @@
+---
+title: "部署"
+description: "使用Docker部署AI Gateway"
+---
+
+## Docker部署
+
+AI Gateway 支持使用Docker进行快速部署，这是推荐的部署方式。
+
+## 快速部署
+
+### 1. 构建镜像
+
+```bash
+# 克隆项目
+git clone https://github.com/your-repo/ai-gateway.git
+cd ai-gateway
+
+# 构建Docker镜像
+docker build -t ai-gateway .
+```
+
+### 2. 配置环境变量
+
+创建 `.env` 文件并配置必要的环境变量：
+
+```bash
+# FastGPT配置
+FASTGPT_BASE_URL=https://your-fastgpt-instance.com
+FASTGPT_API_KEY=your-api-key
+FASTGPT_APP_ID=your-app-id
+
+# Dify配置
+DIFY_BASE_URL=https://your-dify-instance.com
+DIFY_API_KEY=your-api-key
+
+# Coze配置
+COZE_API_TOKEN=your-api-token
+COZE_BOT_ID=your-bot-id
+
+# S3/MinIO配置（可选）
+S3_ENDPOINT=https://your-s3-endpoint.com
+S3_ACCESS_KEY=your-access-key
+S3_SECRET_KEY=your-secret-key
+S3_BUCKET=your-bucket-name
+S3_REGION=your-region
+S3_KEY_PREFIX=uploads
+S3_ACL=public-read
+S3_PUBLIC_BASE_URL=https://your-cdn-domain.com
+```
+
+### 3. 运行容器
+
+```bash
+# 运行容器
+docker run -d \
+  --name ai-gateway \
+  -p 3000:3000 \
+  --env-file .env \
+  ai-gateway
+```
+
+<Check>
+服务启动后，访问 http://localhost:3000 查看API文档
+</Check>
+
+## 生产环境部署
+
+### 使用Docker Compose
+
+创建 `docker-compose.yml` 文件：
+
+```yaml
+version: '3.8'
+
+services:
+  ai-gateway:
+    build: .
+    container_name: ai-gateway
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    volumes:
+      - ./logs:/app/logs
+```
+
+启动服务：
+
+```bash
+# 启动服务
+docker-compose up -d
+
+# 查看日志
+docker-compose logs -f ai-gateway
+
+# 停止服务
+docker-compose down
+```
+
+### 使用Docker Swarm
+
+```bash
+# 初始化Swarm
+docker swarm init
+
+# 部署服务
+docker stack deploy -c docker-compose.yml ai-gateway
+
+# 查看服务状态
+docker service ls
+
+# 查看服务日志
+docker service logs ai-gateway_ai-gateway
+```
+
+## 配置说明
+
+### 端口配置
+
+默认情况下，AI Gateway 监听3000端口。您可以通过修改 `docker run` 命令中的端口映射来更改：
+
+```bash
+# 使用其他端口
+docker run -d -p 8080:3000 --env-file .env ai-gateway
+```
+
+### 环境变量
+
+<CardGroup cols={2}>
+<Card title="必需配置" icon="exclamation-triangle">
+  - FASTGPT_API_KEY 或 DIFY_API_KEY 或 COZE_API_TOKEN
+  - 对应的平台配置参数
+</Card>
+
+<Card title="可选配置" icon="cog">
+  - S3/MinIO文件存储配置
+  - 日志级别配置
+  - 性能调优参数
+</Card>
+</CardGroup>
+
+### 健康检查
+
+AI Gateway 提供健康检查端点：
+
+```bash
+# 检查服务状态
+curl http://localhost:3000/health
+
+# 预期响应
+{
+  "status": "healthy",
+  "timestamp": "2024-01-15T10:30:00Z"
+}
+```
+
+## 监控和日志
+
+### 查看日志
+
+```bash
+# 查看容器日志
+docker logs ai-gateway
+
+# 实时查看日志
+docker logs -f ai-gateway
+
+# 查看最近100行日志
+docker logs --tail 100 ai-gateway
+```
+
+### 性能监控
+
+```bash
+# 查看容器资源使用情况
+docker stats ai-gateway
+
+# 进入容器进行调试
+docker exec -it ai-gateway /bin/bash
+```
+
+## 更新部署
+
+### 更新镜像
+
+```bash
+# 拉取最新代码
+git pull
+
+# 重新构建镜像
+docker build -t ai-gateway .
+
+# 停止旧容器
+docker stop ai-gateway
+
+# 删除旧容器
+docker rm ai-gateway
+
+# 启动新容器
+docker run -d --name ai-gateway -p 3000:3000 --env-file .env ai-gateway
+```
+
+### 使用Docker Compose更新
+
+```bash
+# 重新构建并启动
+docker-compose up -d --build
+
+# 或者先停止再启动
+docker-compose down
+docker-compose up -d --build
+```
+
+## 故障排除
+
+### 常见问题
+
+<AccordionGroup>
+<Accordion title="容器启动失败">
+检查环境变量配置是否正确，特别是API密钥和URL格式。
+</Accordion>
+
+<Accordion title="API调用失败">
+确认AI平台的API密钥有效，网络连接正常。
+</Accordion>
+
+<Accordion title="文件上传失败">
+检查S3/MinIO配置是否正确，存储桶是否存在。
+</Accordion>
+</AccordionGroup>
+
+### 调试命令
+
+```bash
+# 检查容器状态
+docker ps -a
+
+# 查看容器详细信息
+docker inspect ai-gateway
+
+# 查看环境变量
+docker exec ai-gateway env
+
+# 测试网络连接
+docker exec ai-gateway ping your-ai-platform.com
+```
+
+<Card
+  title="查看完整配置"
+  icon="cog"
+  href="/essentials/architecture"
+>
+  了解更多关于AI Gateway的配置选项
+</Card>

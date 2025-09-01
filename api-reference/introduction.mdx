@@ -1,33 +1,205 @@
 ---
-title: 'Introduction'
-description: 'Example section for showcasing API endpoints'
+title: 'API文档'
+description: 'AI Gateway 统一API接口文档'
 ---
 
-<Note>
-  If you're not looking to build API reference documentation, you can delete
-  this section by removing the api-reference folder.
-</Note>
+## API概述
 
-## Welcome
+AI Gateway 提供统一的REST API接口，支持多个AI平台的标准化访问。所有API都遵循RESTful设计原则，使用JSON格式进行数据交换。
 
-There are two ways to build API documentation: [OpenAPI](https://mintlify.com/docs/api-playground/openapi/setup) and [MDX components](https://mintlify.com/docs/api-playground/mdx/configuration). For the starter kit, we are using the following OpenAPI specification.
+## 基础信息
+
+- **基础URL**: `http://localhost:3000`
+- **API版本**: `v1`
+- **数据格式**: `application/json`
+- **字符编码**: `UTF-8`
+
+## 认证方式
+
+AI Gateway 支持通过请求头中的 `agent` 参数来指定使用的AI平台：
+
+```bash
+# 使用FastGPT
+-H 'agent: fastgpt'
+
+# 使用Dify
+-H 'agent: dify'
+
+# 使用Coze
+-H 'agent: coze'
+```
+
+## 核心接口
+
+### 聊天接口
+
+**端点**: `POST /api/v1/chat`
+
+处理与AI平台的对话请求，支持流式和非流式响应。
 
 <Card
-  title="Plant Store Endpoints"
-  icon="leaf"
-  href="https://github.com/mintlify/starter/blob/main/api-reference/openapi.json"
+  title="查看聊天接口详情"
+  icon="message-circle"
+  href="/api-reference/endpoint/create"
 >
-  View the OpenAPI specification file
+  了解完整的请求参数和响应格式
 </Card>
 
-## Authentication
+### 文件上传接口
 
-All API endpoints are authenticated using Bearer tokens and picked up from the specification file.
+**端点**: `POST /api/v1/upload`
+
+支持文件上传到对象存储服务，返回文件访问URL。
+
+<Card
+  title="查看文件上传接口详情"
+  icon="upload"
+  href="/api-reference/endpoint/webhook"
+>
+  了解支持的文件类型和上传限制
+</Card>
+
+### 支持的Agent查询
+
+**端点**: `GET /api/v1/upload/agents`
+
+获取当前系统支持的所有AI平台列表。
+
+<Card
+  title="查看Agent查询接口详情"
+  icon="list"
+  href="/api-reference/endpoint/get"
+>
+  了解返回的Agent列表格式
+</Card>
+
+## 响应格式
+
+### 标准响应格式
+
+所有API都返回统一的响应格式：
 
 ```json
-"security": [
-  {
-    "bearerAuth": []
+{
+  "code": 0,
+  "msg": "Success",
+  "data": {
+    // 具体数据内容
   }
-]
+}
 ```
+
+### 聊天响应格式
+
+聊天接口返回符合OpenAI格式的响应：
+
+```json
+{
+  "id": "会话ID",
+  "model": "使用的模型",
+  "usage": {
+    "prompt_tokens": 100,
+    "completion_tokens": 200,
+    "total_tokens": 300
+  },
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "AI回复内容"
+      },
+      "finish_reason": "stop",
+      "index": 0
+    }
+  ]
+}
+```
+
+## 错误处理
+
+### HTTP状态码
+
+- `200` - 请求成功
+- `400` - 请求参数错误
+- `401` - 认证失败
+- `404` - 资源不存在
+- `500` - 服务器内部错误
+
+### 错误响应格式
+
+```json
+{
+  "code": 400,
+  "msg": "错误描述",
+  "detail": "详细错误信息"
+}
+```
+
+## 使用示例
+
+### 基本对话
+
+```bash
+curl -X POST 'http://localhost:3000/api/v1/chat' \
+  -H 'Content-Type: application/json' \
+  -H 'agent: fastgpt' \
+  -d '{
+    "query": "你好，请介绍一下AI Gateway",
+    "user": "test_user",
+    "stream": false
+  }'
+```
+
+### 流式对话
+
+```bash
+curl -X POST 'http://localhost:3000/api/v1/chat' \
+  -H 'Content-Type: application/json' \
+  -H 'agent: fastgpt' \
+  -d '{
+    "query": "请详细介绍一下AI Gateway的功能",
+    "user": "test_user",
+    "stream": true
+  }'
+```
+
+### 文件上传
+
+```bash
+curl -X POST 'http://localhost:3000/api/v1/upload' \
+  -H 'agent: fastgpt' \
+  -F 'file=@document.pdf' \
+  -F 'created_by=test_user'
+```
+
+## 速率限制
+
+为了确保服务的稳定性，AI Gateway 实施了以下速率限制：
+
+- **聊天接口**: 每分钟最多60次请求
+- **文件上传**: 每分钟最多10次请求
+- **Agent查询**: 每分钟最多30次请求
+
+超过限制时，API将返回 `429 Too Many Requests` 状态码。
+
+## 最佳实践
+
+### 请求优化
+
+1. **使用连接池**: 复用HTTP连接以提高性能
+2. **批量处理**: 对于大量请求，考虑使用批量接口
+3. **错误重试**: 实现指数退避的重试机制
+
+### 安全建议
+
+1. **保护API密钥**: 不要在客户端代码中暴露API密钥
+2. **使用HTTPS**: 在生产环境中始终使用HTTPS
+3. **输入验证**: 在客户端进行基本的输入验证
+
+<Card
+  title="查看完整API文档"
+  icon="book"
+  href="/api-reference/endpoint/create"
+>
+  浏览所有可用的API接口
+</Card>

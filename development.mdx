@@ -1,94 +1,208 @@
 ---
-title: 'Development'
-description: 'Preview changes locally to update your docs'
+title: '开发指南'
+description: '在本地环境进行AI Gateway开发和调试'
 ---
 
 <Info>
-  **Prerequisites**:
-  - Node.js version 19 or higher
-  - A docs repository with a `docs.json` file
+  **前置要求**:
+  - Python 3.12+
+  - uv包管理器
+  - 至少一个AI平台的API密钥
 </Info>
 
-Follow these steps to install and run Mintlify on your operating system.
+## 环境准备
 
-<Steps>
-<Step title="Install the Mintlify CLI">
+### 安装uv
+
+uv是一个快速的Python包管理器，推荐用于AI Gateway开发：
 
 ```bash
-npm i -g mint
+# 安装uv
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# 验证安装
+uv --version
 ```
-</Step>
 
-<Step title="Preview locally">
-
-Navigate to your docs directory where your `docs.json` file is located, and run the following command:
+### 克隆项目
 
 ```bash
+git clone https://github.com/your-repo/ai-gateway.git
+cd ai-gateway
+```
+
+## 本地开发
+
+### 1. 安装依赖
+
+使用uv安装项目依赖：
+
+```bash
+# 创建虚拟环境并安装依赖
+uv sync
+
+# 激活虚拟环境
+source .venv/bin/activate  # Linux/macOS
+# 或
+.venv\Scripts\activate     # Windows
+```
+
+### 2. 配置环境变量
+
+参考[快速开始](/quickstart)页面中的环境变量配置部分，创建 `.env` 文件并配置必要的API密钥。
+
+### 3. 启动开发服务器
+
+```bash
+# 启动开发服务器
+uv run uvicorn main:app --host 0.0.0.0 --port 3000 --reload
+```
+
+<Check>
+开发服务器启动后，访问 http://localhost:3000 查看API文档
+</Check>
+
+## 开发工具
+
+### 代码格式化
+
+AI Gateway 使用black和isort进行代码格式化：
+
+```bash
+# 格式化代码
+uv run black .
+uv run isort .
+
+# 检查代码格式
+uv run black --check .
+uv run isort --check-only .
+```
+
+### 类型检查
+
+使用mypy进行类型检查：
+
+```bash
+# 运行类型检查
+uv run mypy .
+```
+
+### 测试
+
+运行项目测试：
+
+```bash
+# 运行所有测试
+uv run pytest
+
+# 运行特定测试文件
+uv run pytest tests/test_fastgpt_agent.py
+
+# 生成测试覆盖率报告
+uv run pytest --cov=app tests/
+```
+
+## 调试技巧
+
+### 日志配置
+
+在开发环境中，可以设置更详细的日志级别：
+
+```bash
+# 设置日志级别
+export LOG_LEVEL=DEBUG
+
+# 启动服务
+uv run uvicorn main:app --reload --log-level debug
+```
+
+### 调试模式
+
+使用Python调试器进行调试：
+
+```python
+import pdb; pdb.set_trace()  # 在代码中添加断点
+```
+
+或者使用VSCode的调试功能：
+
+```json
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "AI Gateway Debug",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/main.py",
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}"
+      }
+    }
+  ]
+}
+```
+
+## 开发新Agent
+
+要开发新的AI平台支持，请参考[Agent开发指南](/essentials/agent-development)页面。
+
+## 文档开发
+
+### 本地预览文档
+
+AI Gateway 使用Mintlify进行文档管理。要预览文档：
+
+```bash
+# 安装Mintlify CLI
+npm i -g mint
+
+# 启动文档预览
 mint dev
 ```
 
-A local preview of your documentation will be available at `http://localhost:3000`.
+文档将在 http://localhost:3000 上可用。
 
-</Step>
-</Steps>
+### 自定义端口
 
-## Custom ports
-
-By default, Mintlify uses port 3000. You can customize the port Mintlify runs on by using the `--port` flag. For example, to run Mintlify on port 3333, use this command:
+如果3000端口被占用，可以使用其他端口：
 
 ```bash
 mint dev --port 3333
 ```
 
-If you attempt to run Mintlify on a port that's already in use, it will use the next available port:
-
-```md
-Port 3000 is already in use. Trying 3001 instead.
-```
-
-## Mintlify versions
-
-Please note that each CLI release is associated with a specific version of Mintlify. If your local preview does not align with the production version, please update the CLI:
-
-```bash
-npm mint update
-```
-
-## Validating links
-
-The CLI can assist with validating links in your documentation. To identify any broken links, use the following command:
-
-```bash
-mint broken-links
-```
-
-## Deployment
-
-If the deployment is successful, you should see the following:
-
-<Frame>
-  <img src="/images/checks-passed.png" alt="Screenshot of a deployment confirmation message that says All checks have passed." style={{ borderRadius: '0.5rem' }} />
-</Frame>
-
-## Code formatting
-
-We suggest using extensions on your IDE to recognize and format MDX. If you're a VSCode user, consider the [MDX VSCode extension](https://marketplace.visualstudio.com/items?itemName=unifiedjs.vscode-mdx) for syntax highlighting, and [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode) for code formatting.
-
-## Troubleshooting
+## 常见问题
 
 <AccordionGroup>
-  <Accordion title='Error: Could not load the "sharp" module using the darwin-arm64 runtime'>
+<Accordion title="依赖安装失败">
+检查Python版本是否为3.12+，确保网络连接正常。
+</Accordion>
 
-    This may be due to an outdated version of node. Try the following:
-    1. Remove the currently-installed version of the CLI: `npm remove -g mint`
-    2. Upgrade to Node v19 or higher.
-    3. Reinstall the CLI: `npm i -g mint`
-  </Accordion>
+<Accordion title="API调用失败">
+确认环境变量配置正确，API密钥有效。
+</Accordion>
 
-  <Accordion title="Issue: Encountering an unknown error">
-  
-    Solution: Go to the root of your device and delete the `~/.mintlify` folder. Then run `mint dev` again.
-  </Accordion>
+<Accordion title="端口被占用">
+使用其他端口启动服务：`uv run uvicorn main:app --port 3001 --reload`
+</Accordion>
 </AccordionGroup>
 
-Curious about what changed in the latest CLI version? Check out the [CLI changelog](https://www.npmjs.com/package/mintlify?activeTab=versions).
+## 下一步
+
+<CardGroup cols={2}>
+<Card title="Agent开发" icon="code" href="/essentials/agent-development">
+  学习如何为AI Gateway添加新的AI平台支持
+</Card>
+
+<Card title="API文档" icon="terminal" href="/api-reference/introduction">
+  查看完整的API接口文档
+</Card>
+
+<Card title="部署指南" icon="rocket" href="/deploy">
+  了解如何部署AI Gateway到生产环境
+</Card>
+
+<Card title="架构设计" icon="diagram-project" href="/essentials/architecture">
+  深入了解AI Gateway的技术架构
+</Card>
+</CardGroup>

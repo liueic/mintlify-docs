@@ -1,97 +1,149 @@
 ---
-title: "Introduction"
-description: "Welcome to the new home for your documentation"
+title: "AI Gateway"
+description: "多Agent统一接口平台 - 基于适配器模式的企业级AI服务网关"
 ---
 
-## Setting up
+## 简介
 
-Get your documentation site up and running in minutes.
+AI Gateway 是一个基于适配器模式的多Agent统一接口平台，旨在为前端提供标准化的AI服务接口。该项目通过抽象基类和统一的数据模型，实现了对多个AI平台（FastGPT、Dify、Coze等）的兼容性，让开发者可以轻松切换不同的AI后端服务。
 
 <Card
-  title="Start here"
+  title="快速开始"
   icon="rocket"
   href="/quickstart"
   horizontal
 >
-  Follow our three step quickstart guide.
+  5分钟部署您的第一个AI Gateway实例
 </Card>
 
-## Make it yours
-
-Design a docs site that looks great and empowers your users.
+## 核心特性
 
 <Columns cols={2}>
   <Card
-    title="Edit locally"
-    icon="pen-to-square"
+    title="统一接口"
+    icon="link"
+  >
+    所有Agent都继承自BaseAgent基类，提供标准化的接口，前端只需对接一套API
+  </Card>
+  <Card
+    title="灵活切换"
+    icon="arrows-rotate"
+  >
+    通过修改请求头中的agent参数即可切换不同的AI平台，无需修改前端代码
+  </Card>
+  <Card
+    title="文件支持"
+    icon="file-arrow-up"
+  >
+    支持图片、文档等多种文件类型上传，所有Agent共享相同的文件处理接口
+  </Card>
+  <Card
+    title="流式响应"
+    icon="stream"
+  >
+    支持SSE（Server-Sent Events）流式响应，提供更好的用户体验
+  </Card>
+</Columns>
+
+## 支持的平台
+
+AI Gateway 目前支持以下主流AI平台：
+
+- **FastGPT** - 完整的RAG支持，知识库检索和引用
+- **Dify** - 工作流和对话管理，变量替换和上下文管理  
+- **Coze** - 基于Coze平台的Bot服务，支持国内和海外版本
+
+<Card
+  title="查看所有支持的平台"
+  icon="list"
+  href="/essentials/supported-platforms"
+>
+  详细了解每个平台的特性和配置方法
+</Card>
+
+## 技术架构
+
+AI Gateway 采用现代化的技术栈和架构设计：
+
+- **适配器模式** - 清晰的代码结构，易于维护和扩展
+- **异步处理** - 基于FastAPI，支持高并发请求处理
+- **类型安全** - 使用Pydantic模型确保数据验证和类型安全
+- **动态加载** - 自动发现和加载所有Agent模块
+
+<Card
+  title="架构详解"
+  icon="diagram-project"
+  href="/essentials/architecture"
+>
+  深入了解AI Gateway的技术架构和设计理念
+</Card>
+
+## 开始使用
+
+<Columns cols={2}>
+  <Card
+    title="快速部署"
+    icon="cloud-arrow-up"
+    href="/deploy"
+  >
+    使用Docker一键部署AI Gateway
+  </Card>
+  <Card
+    title="本地开发"
+    icon="code"
     href="/development"
   >
-    Edit your docs locally and preview them in real time.
+    在本地环境进行开发和调试
   </Card>
   <Card
-    title="Customize your site"
-    icon="palette"
-    href="/essentials/settings"
-  >
-    Customize the design and colors of your site to match your brand.
-  </Card>
-    <Card
-    title="Set up navigation"
-    icon="map"
-    href="/essentials/navigation"
-  >
-    Organize your docs to help users find what they need and succeed with your product.
-  </Card>
-  <Card
-    title="API documentation"
+    title="API文档"
     icon="terminal"
     href="/api-reference/introduction"
   >
-    Auto-generate API documentation from OpenAPI specifications.
+    完整的API接口文档和使用示例
+  </Card>
+  <Card
+    title="集成指南"
+    icon="puzzle-piece"
+    href="/essentials/integration"
+  >
+    如何将AI Gateway集成到您的项目中
   </Card>
 </Columns>
 
-## Create beautiful pages
+## 项目优势
 
-Everything you need to create world-class documentation.
+### 技术优势
+- **架构清晰** - 采用适配器模式，代码结构清晰，易于维护
+- **扩展性强** - 新增Agent只需实现BaseAgent接口即可
+- **类型安全** - 使用Pydantic模型确保数据验证和类型安全
+- **异步支持** - 基于FastAPI，支持异步处理和并发请求
 
-<Columns cols={2}>
-  <Card
-    title="Write with MDX"
-    icon="pen-fancy"
-    href="/essentials/markdown"
-  >
-    Use MDX to style your docs pages.
-  </Card>
-  <Card
-    title="Code samples"
-    icon="code"
-    href="/essentials/code"
-  >
-    Add sample code to demonstrate how to use your product.
-  </Card>
-  <Card
-    title="Images"
-    icon="image"
-    href="/essentials/images"
-  >
-    Display images and other media.
-  </Card>
-  <Card
-    title="Reusable snippets"
-    icon="recycle"
-    href="/essentials/reusable-snippets"
-  >
-    Write once and reuse across your docs.
-  </Card>
-</Columns>
+### 业务优势
+- **统一接口** - 前端只需对接一套API，无需适配多个平台
+- **灵活切换** - 可以根据需求动态切换不同的AI平台
+- **成本控制** - 可以比较不同平台的性能和成本，选择最优方案
+- **风险分散** - 避免单一平台依赖，提高系统稳定性
 
-## Need inspiration?
+### 运维优势
+- **配置简单** - 通过环境变量即可配置所有Agent
+- **监控友好** - 统一的日志格式和错误处理
+- **部署便捷** - 支持Docker部署，一键启动
+- **文档完善** - 详细的API文档和使用示例
+
+## 使用场景
+
+AI Gateway 特别适用于以下场景：
+
+- **多平台AI服务** - 需要同时使用多个AI平台的企业
+- **平台迁移** - 需要从某个AI平台迁移到另一个平台
+- **成本优化** - 需要根据使用情况选择最优的AI平台
+- **风险控制** - 避免对单一AI平台的依赖
 
 <Card
-  title="See complete examples"
-  icon="stars"
-  href="https://mintlify.com/customers"
+  title="查看使用案例"
+  icon="lightbulb"
+  href="/essentials/use-cases"
 >
-  Browse our showcase of exceptional documentation sites.
+  了解AI Gateway在实际项目中的应用案例
 </Card>
