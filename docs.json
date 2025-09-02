@@ -94,7 +94,7 @@
     "primary": {
       "type": "button",
       "label": "开始使用",
-      "href": "/quickstart"
+      "href": "https://github.com/your-repo/ai-gateway"
     }
   },
   "contextual": {
