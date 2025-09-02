@@ -22,8 +22,8 @@ description: "5分钟部署您的第一个AI Gateway实例"
     克隆AI Gateway项目到本地：
     
     ```bash
-    git clone https://github.com/your-repo/ai-gateway.git
-    cd ai-gateway
+    git clone https://github.com/liueic/PancrePal-xiaoyibao
+    cd PancrePal-xiaoyibao
     ```
   </Accordion>
 </AccordionGroup>
@@ -35,24 +35,13 @@ description: "5分钟部署您的第一个AI Gateway实例"
     创建 `.env` 文件并配置至少一个AI平台的API密钥：
     
     ```bash
-    # FastGPT配置
-    FASTGPT_BASE_URL=https://your-fastgpt-instance.com
-    FASTGPT_API_KEY=your-api-key
-    FASTGPT_APP_ID=your-app-id
-    
-    # Dify配置
-    DIFY_BASE_URL=https://your-dify-instance.com
-    DIFY_API_KEY=your-api-key
-    
-    # Coze配置
-    COZE_API_TOKEN=your-api-token
-    COZE_BOT_ID=your-bot-id
+    curl https://raw.githubusercontent.com/liueic/PancrePal-xiaoyibao/refs/heads/main/env.example -o .env
     ```
-    
+
     <Warning>请确保API密钥的安全性，不要将其提交到版本控制系统</Warning>
   </Accordion>
-  <Accordion icon="cog" title="文件存储配置（可选）">
-    如果需要文件上传功能，配置S3或MinIO：
+  <Accordion icon="folder" title="文件存储配置（可选）">
+    如果后端的 Agent 需要文件上传功能，配置S3或MinIO：
     
     ```bash
     S3_ENDPOINT=https://your-s3-endpoint.com
@@ -84,10 +73,10 @@ description: "5分钟部署您的第一个AI Gateway实例"
     
     ```bash
     # 安装依赖
-    pip install -r requirements.txt
+    uv pip install -r requirements.txt
     
     # 启动服务
-    uvicorn main:app --host 0.0.0.0 --port 3000 --reload
+    make run
     ```
   </Accordion>
 </AccordionGroup>
@@ -145,5 +134,5 @@ curl -X POST 'http://localhost:3000/api/v1/chat' \
 </CardGroup>
 
 <Note>
-**需要帮助？** 查看我们的[完整文档](/essentials/architecture)或加入[社区讨论](https://github.com/your-repo/ai-gateway/discussions)。
+**需要帮助？** 查看我们的[完整文档](/essentials/architecture)或加入[社区讨论](https://github.com/liueic/PancrePal-xiaoyibao)。
 </Note>
