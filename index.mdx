@@ -43,6 +43,12 @@ AI Gateway 是一个基于适配器模式的多Agent统一接口平台，旨在�
   >
     支持SSE（Server-Sent Events）流式响应，提供更好的用户体验
   </Card>
+  <Card
+    title="认证架构"
+    icon="shield"
+  >
+    支持API密钥、JWT令牌等多种认证方式
+  </Card>
 </Columns>
 
 ## 支持的平台
@@ -52,6 +58,7 @@ AI Gateway 目前支持以下主流AI平台：
 - **FastGPT** - 完整的RAG支持，知识库检索和引用
 - **Dify** - 工作流和对话管理，变量替换和上下文管理  
 - **Coze** - 基于Coze平台的Bot服务，支持国内和海外版本
+- **智谱清言** - 基于智谱AI的Agent服务
 
 <Card
   title="查看所有支持的平台"
@@ -69,6 +76,7 @@ AI Gateway 采用现代化的技术栈和架构设计：
 - **异步处理** - 基于FastAPI，支持高并发请求处理
 - **类型安全** - 使用Pydantic模型确保数据验证和类型安全
 - **动态加载** - 自动发现和加载所有Agent模块
+- **用户管理** - 支持API密钥、JWT令牌等多种认证方式
 
 <Card
   title="架构详解"

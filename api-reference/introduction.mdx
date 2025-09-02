@@ -16,17 +16,17 @@ AI Gateway 提供统一的REST API接口，支持多个AI平台的标准化访�
 
 ## 认证方式
 
-AI Gateway 支持通过请求头中的 `agent` 参数来指定使用的AI平台：
+AI Gateway 支持通过请求头中的 `Agent` 参数来指定使用的AI平台：
 
 ```bash
 # 使用FastGPT
--H 'agent: fastgpt'
+-H 'Agent: fastgpt'
 
 # 使用Dify
--H 'agent: dify'
+-H 'Agent: dify'
 
 # 使用Coze
--H 'agent: coze'
+-H 'Agent: coze'
 ```
 
 ## 核心接口
@@ -61,7 +61,7 @@ AI Gateway 支持通过请求头中的 `agent` 参数来指定使用的AI平台�
 
 ### 支持的Agent查询
 
-**端点**: `GET /api/v1/upload/agents`
+**端点**: `GET /api/v1/agents`
 
 获取当前系统支持的所有AI平台列表。
 

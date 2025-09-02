@@ -26,6 +26,7 @@
             "pages": [
               "essentials/supported-platforms",
               "essentials/architecture",
+              "essentials/auth",
               "essentials/integration"
             ]
           },
