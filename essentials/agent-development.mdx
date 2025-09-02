@@ -7,6 +7,44 @@ description: "如何为AI Gateway添加新的AI平台支持"
 
 AI Gateway 采用插件化架构设计，支持轻松扩展新的AI平台。通过实现标准的BaseAgent接口，您可以快速集成任何AI服务。
 
+## 流程展示
+
+```mermaid
+flowchart LR
+    A[开始] --> B[继承 BaseAgent]
+    B --> C[实现方法]
+
+    subgraph 开发
+        C --> D[chat 方法]
+        C --> E[upload 方法]
+        D --> F[调用平台 API]
+        E --> G[文件上传逻辑]
+        F --> H[统一响应]
+        G --> H
+        H --> I[注册 Agent]
+        I --> J[配置环境]
+    end
+
+    subgraph 测试
+        J --> K[编写测试]
+        K --> L[单测]
+        K --> M[集测]
+        L --> N{通过?}
+        M --> N
+        N -->|否| O[修复] --> K
+    end
+
+    subgraph 部署
+        N -->|是| P[部署清单]
+        P --> Q[上线]
+    end
+
+    style A fill:#e3f2fd
+    style B fill:#f3e5f5
+    style I fill:#e8f5e8
+    style Q fill:#fff3e0
+```
+
 ## 开发步骤
 
 ### 1. 继承BaseAgent基类

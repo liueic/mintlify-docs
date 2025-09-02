@@ -27,7 +27,8 @@
               "essentials/supported-platforms",
               "essentials/architecture",
               "essentials/auth",
-              "essentials/integration"
+              "essentials/integration",
+              "essentials/logs"
             ]
           },
           {
@@ -35,12 +36,6 @@
             "pages": [
               "development",
               "essentials/agent-development"
-            ]
-          },
-          {
-            "group": "使用案例",
-            "pages": [
-              "essentials/use-cases"
             ]
           }
         ]
@@ -70,13 +65,8 @@
       "anchors": [
         {
           "anchor": "GitHub",
-          "href": "https://github.com/your-repo/ai-gateway",
+          "href": "https://github.com/liueic/PancrePal-xiaoyibao",
           "icon": "github"
-        },
-        {
-          "anchor": "社区",
-          "href": "https://github.com/your-repo/ai-gateway/discussions",
-          "icon": "slack"
         }
       ]
     }
@@ -89,13 +79,13 @@
     "links": [
       {
         "label": "支持",
-        "href": "mailto:support@ai-gateway.com"
+        "href": "mailto:liueic@ciallo.cv"
       }
     ],
     "primary": {
       "type": "button",
       "label": "开始使用",
-      "href": "https://github.com/your-repo/ai-gateway"
+      "href": "https://github.com/liueic/PancrePal-xiaoyibao"
     }
   },
   "contextual": {
@@ -112,7 +102,7 @@
   },
   "footer": {
     "socials": {
-      "github": "https://github.com/your-repo/ai-gateway"
+      "github": "https://github.com/liueic/PancrePal-xiaoyibao"
     }
   }
 }

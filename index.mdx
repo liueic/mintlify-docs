@@ -1,11 +1,11 @@
 ---
 title: "AI Gateway"
-description: "多Agent统一接口平台 - 基于适配器模式的企业级AI服务网关"
+description: "多Agent统一接口平台 - 基于适配器模式的 Agent 统一网关"
 ---
 
 ## 简介
 
-AI Gateway 是一个基于适配器模式的多Agent统一接口平台，旨在为前端提供标准化的AI服务接口。该项目通过抽象基类和统一的数据模型，实现了对多个AI平台（FastGPT、Dify、Coze等）的兼容性，让开发者可以轻松切换不同的AI后端服务。
+AI Gateway 是一个基于适配器模式的多 Agent 统一接口平台，旨在为前端提供标准化的AI服务接口。该项目通过抽象基类和统一的数据模型，实现了对多个AI平台（FastGPT、Dify、Coze等）的兼容性，让开发者可以轻松切换不同的AI后端服务。
 
 <Card
   title="快速开始"
@@ -39,7 +39,7 @@ AI Gateway 是一个基于适配器模式的多Agent统一接口平台，旨在�
   </Card>
   <Card
     title="流式响应"
-    icon="stream"
+    icon="water"
   >
     支持SSE（Server-Sent Events）流式响应，提供更好的用户体验
   </Card>
@@ -49,11 +49,17 @@ AI Gateway 是一个基于适配器模式的多Agent统一接口平台，旨在�
   >
     支持API密钥、JWT令牌等多种认证方式
   </Card>
+  <Card
+    title="日志管理"
+    icon="file"
+  >
+    支持详细的日志记录，记录 Agent 的原始请求和响应
+  </Card>
 </Columns>
 
 ## 支持的平台
 
-AI Gateway 目前支持以下主流AI平台：
+AI Gateway 目前支持以下主流AI平台（期待您的贡献）：
 
 - **FastGPT** - 完整的RAG支持，知识库检索和引用
 - **Dify** - 工作流和对话管理，变量替换和上下文管理  
@@ -138,20 +144,3 @@ AI Gateway 采用现代化的技术栈和架构设计：
 - **监控友好** - 统一的日志格式和错误处理
 - **部署便捷** - 支持Docker部署，一键启动
 - **文档完善** - 详细的API文档和使用示例
-
-## 使用场景
-
-AI Gateway 特别适用于以下场景：
-
-- **多平台AI服务** - 需要同时使用多个AI平台的企业
-- **平台迁移** - 需要从某个AI平台迁移到另一个平台
-- **成本优化** - 需要根据使用情况选择最优的AI平台
-- **风险控制** - 避免对单一AI平台的依赖
-
-<Card
-  title="查看使用案例"
-  icon="lightbulb"
-  href="/essentials/use-cases"
->
-  了解AI Gateway在实际项目中的应用案例
-</Card>

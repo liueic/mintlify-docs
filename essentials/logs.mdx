@@ -1,0 +1,306 @@
+---
+title: "日志管理"
+description: "了解AI Gateway的日志管理和日志记录方式"
+---
+
+## 日志管理
+
+AI Gateway 提供了详细的日志记录，包括 Agent 交互日志、API Key 用量统计和 Gateway 请求日志。这些日志存储在 MongoDB 中，便于监控、调试和审计。
+
+## Agent 原始请求和响应
+
+在 MongoDB 中，我们使用 `agent_logs` 集合来存储 Agent 的完整交互日志，包括用户请求、AI 响应、性能指标等关键信息。
+
+### 数据结构详解
+
+```json
+{
+  "_id": {
+    "$oid": "68b6a622bdb8d0b3bab3b9e7"
+  },
+  "timestamp": {
+    "$date": "2025-09-02T16:08:56.501Z"
+  },
+  "finished_at": {
+    "$date": "2025-09-02T16:09:06.068Z"
+  },
+  "duration_ms": 9566,
+  "user_id": "68b69f1367bdaff96386c4e6",
+  "username": "admin",
+  "agent": "dify",
+  "request": {
+    "query": "你好，我需要你的帮助",
+    "user": "lihua",
+    "uid": null,
+    "stream": false,
+    "app_id": "",
+    "chat_id": "",
+    "files": [],
+    "conversation_id": "",
+    "detail": false
+  },
+  "raw_response": {
+    "event": "message",
+    "task_id": "56b8fea9-04bd-4103-81fb-c0ef6ee39a35",
+    "id": "b7336ca5-6250-4e0e-afe2-de14943126f4",
+    "message_id": "b7336ca5-6250-4e0e-afe2-de14943126f4",
+    "conversation_id": "0bfbc6e7-f255-49aa-9144-0ebcb6470e24",
+    "mode": "advanced-chat",
+    "answer": "你好！当然可以，我会尽力帮助你。你需要什么样的帮助呢？",
+    "metadata": {
+      "annotation_reply": null,
+      "retriever_resources": [],
+      "usage": {
+        "prompt_tokens": 36,
+        "prompt_unit_price": "0",
+        "prompt_price_unit": "0.000001",
+        "prompt_price": "0",
+        "completion_tokens": 15,
+        "completion_unit_price": "0",
+        "completion_price_unit": "0.000001",
+        "completion_price": "0",
+        "total_tokens": 51,
+        "total_price": "0",
+        "currency": "RMB",
+        "latency": 8.30785793699988
+      }
+    },
+    "created_at": 1756800537
+  },
+  "formatted_response": {
+    "id": "0bfbc6e7-f255-49aa-9144-0ebcb6470e24",
+    "model": "advanced-chat",
+    "usage": {
+      "prompt_tokens": 36,
+      "completion_tokens": 15,
+      "total_tokens": 51
+    },
+    "choices": [
+      {
+        "message": {
+          "role": "assistant",
+          "content": "你好！当然可以，我会尽力帮助你。你需要什么样的帮助呢？"
+        },
+        "finish_reason": "stop",
+        "index": 0
+      }
+    ]
+  },
+  "detail": false,
+  "stream": false,
+  "path": "/api/v1/chat"
+}
+```
+
+### 字段详细说明
+
+#### 基础信息字段
+- **_id**: MongoDB 自动生成的唯一标识符，使用 ObjectId 格式
+- **timestamp**: 请求开始时间，ISO 8601 格式的 UTC 时间戳
+- **finished_at**: 请求完成时间，用于计算总耗时
+- **duration_ms**: 请求总耗时（毫秒），从接收到响应的完整时间
+- **user_id**: 发起请求的用户唯一标识符
+- **username**: 用户的显示名称，便于人工识别
+- **agent**: 使用的 Agent 类型（如 dify、langchain 等）
+- **path**: 请求的路径端点，标识 API 路由
+
+#### 请求详情字段
+- **request**: 包含用户请求的完整信息
+  - **query**: 用户的实际输入文本或问题
+  - **user**: 用户标识符，可能与 username 相同
+  - **uid**: 预留的用户唯一标识字段，当前为 null
+  - **stream**: 是否启用流式响应（true/false）
+  - **app_id**: 关联的应用程序 ID
+  - **chat_id**: 聊天会话标识符
+  - **files**: 上传的文件列表（数组格式）
+  - **conversation_id**: 对话历史标识符，用于上下文保持
+  - **detail**: 是否返回详细信息
+
+#### 原始响应字段
+- **raw_response**: Agent 返回的原始响应数据
+  - **event**: 事件类型（如 message、error 等）
+  - **task_id**: 任务唯一标识符，用于追踪
+  - **id/message_id**: 消息唯一标识符
+  - **conversation_id**: 对话会话标识符
+  - **mode**: 运行模式（如 advanced-chat、completion 等）
+  - **answer**: AI 的实际回复内容
+  - **metadata**: 元数据信息
+    - **annotation_reply**: 注释回复（预留字段）
+    - **retriever_resources**: 检索到的相关资源列表
+    - **usage**: 用量统计
+      - **prompt_tokens**: 输入文本的 token 数量
+      - **prompt_unit_price**: 输入 token 的单价
+      - **prompt_price_unit**: 价格单位（每百万 token）
+      - **prompt_price**: 输入部分的总价格
+      - **completion_tokens**: 输出文本的 token 数量
+      - **completion_unit_price**: 输出 token 的单价
+      - **completion_price_unit**: 价格单位（每百万 token）
+      - **completion_price**: 输出部分的总价格
+      - **total_tokens**: 总 token 数量（输入+输出）
+      - **total_price**: 总费用（输入+输出）
+      - **currency**: 货币单位（RMB/USD 等）
+      - **latency**: 实际处理延迟（秒）
+  - **created_at**: 消息创建时间戳（Unix 时间戳格式）
+
+#### 格式化响应字段
+- **formatted_response**: 标准化后的响应格式，兼容 OpenAI API 格式
+  - **id**: 响应唯一标识符
+  - **model**: 使用的模型名称
+  - **usage**: 用量统计（简化版）
+    - **prompt_tokens**: 输入 token 数
+    - **completion_tokens**: 输出 token 数
+    - **total_tokens**: 总 token 数
+  - **choices**: 响应选项列表
+    - **message**: 消息内容
+      - **role**: 角色标识（assistant/user/system）
+      - **content**: 实际消息文本
+    - **finish_reason**: 结束原因（stop、length、content_filter 等）
+    - **index**: 选项索引
+
+#### 控制字段
+- **detail**: 是否启用详细日志记录
+- **stream**: 是否启用流式响应模式
+
+## API Key 用量统计
+
+在 MongoDB 中，我们使用 `api_key_stats` 集合来存储API Key的用量统计信息，用量数据包括当前使用的 `key`，以及今天和本月的用量统计数据，以及重置日期。
+
+### 数据结构详解
+
+```json
+{
+  "_id": {
+    "$oid": "68b6a463d572df01e4ee12ed"
+  },
+  "api_key_id": {
+    "$oid": "68b6a40ed572df01e4ee12e9"
+  },
+  "total_calls": 3,
+  "last_used_at": {
+    "$date": "2025-09-02T16:08:56.400Z"
+  },
+  "calls_today": 3,
+  "calls_this_month": 3,
+  "last_reset_date": "2025-09-02",
+  "last_reset_month": "2025-09"
+}
+```
+
+### 字段详细说明
+
+#### 基础标识字段
+- **_id**: MongoDB 自动生成的唯一标识符，用于记录此条统计信息
+- **api_key_id**: 关联的 API Key 的唯一标识符（ObjectId），指向具体的 API Key 记录
+
+#### 用量统计字段
+- **total_calls**: 该 API Key 的累计调用总次数，从创建开始的完整统计
+- **calls_today**: 当日调用次数，每日零点自动重置为 0
+- **calls_this_month**: 当月调用次数，每月第一天零点自动重置为 0
+
+#### 时间相关字段
+- **last_used_at**: 最后一次使用该 API Key 的时间戳，精确到毫秒
+- **last_reset_date**: 日调用次数的最后重置日期，格式为 YYYY-MM-DD
+- **last_reset_month**: 月调用次数的最后重置月份，格式为 YYYY-MM
+
+#### 重置机制说明
+- 日重置：每日 UTC 时间 00:00:00 自动将 `calls_today` 重置为 0，并更新 `last_reset_date`
+- 月重置：每月第一天 UTC 时间 00:00:00 自动将 `calls_this_month` 重置为 0，并更新 `last_reset_month`
+- 这些重置操作由系统自动完成，无需人工干预
+
+## Gateway 请求日志
+
+在 MongoDB 中，我们使用 `request_logs` 集合来存储Gateway的请求日志信息，包括请求的URL、请求的参数、请求的响应等。这些日志用于监控 API 性能、排查问题和安全审计。
+
+### 数据结构详解
+
+```json
+{
+  "_id": {
+    "$oid": "68b69d635c291c4009e86f52"
+  },
+  "timestamp": {
+    "$date": "2025-09-02T07:31:47.248Z"
+  },
+  "method": "POST",
+  "path": "/api/v1/auth/login",
+  "query": {},
+  "ip": "127.0.0.1",
+  "agent": "",
+  "user_id": null,
+  "username": null,
+  "auth_type": null,
+  "api_key_id": null,
+  "status_code": 401,
+  "duration_ms": 8,
+  "user_agent": "Apifox/1.0.0 (https://apifox.com)",
+  "content_length": "72",
+  "response": null,
+  "is_streaming": false,
+  "trace_id": null
+}
+```
+
+### 字段详细说明
+
+#### 基础信息字段
+- **_id**: MongoDB 自动生成的唯一标识符，用于记录此条请求日志
+- **timestamp**: 请求到达网关的时间戳，ISO 8601 格式的 UTC 时间
+
+#### HTTP 请求字段
+- **method**: HTTP 请求方法（GET、POST、PUT、DELETE、PATCH 等）
+- **path**: 请求的路径端点，不包含域名和查询参数
+- **query**: URL 查询参数对象，键值对格式（如 `{"page": 1, "limit": 10}`）
+- **ip**: 客户端 IP 地址，用于地理位置分析和安全监控
+- **user_agent**: 客户端用户代理字符串，标识客户端类型和版本信息
+- **content_length**: 请求内容长度（字节），用于监控请求大小
+
+#### 身份认证字段
+- **user_id**: 已认证用户的唯一标识符，未认证时为 null
+- **username**: 已认证用户的用户名，未认证时为 null
+- **auth_type**: 认证类型（如 bearer、api_key、basic、session 等），未认证时为 null
+- **api_key_id**: 使用的 API Key 标识符（ObjectId），未使用 API Key 时为 null
+- **agent**: 使用的 Agent 类型标识符，用于区分不同的 AI 服务
+
+#### 响应信息字段
+- **status_code**: HTTP 响应状态码，用于判断请求是否成功
+  - 2xx: 成功响应
+  - 3xx: 重定向
+  - 4xx: 客户端错误
+  - 5xx: 服务器错误
+- **duration_ms**: 请求处理耗时（毫秒），从接收到返回的完整时间
+- **response**: 响应内容摘要或错误信息，成功时可能为 null
+- **is_streaming**: 是否为流式响应（true/false），用于区分普通响应和 SSE 流
+
+#### 追踪字段
+- **trace_id**: 分布式追踪 ID，用于跨服务请求链路追踪，便于问题定位
+
+### 日志用途说明
+
+#### 监控用途
+- **性能监控**: 通过 `duration_ms` 监控 API 响应时间
+- **流量监控**: 通过 `timestamp` 和 `path` 分析 API 调用频率
+- **错误监控**: 通过 `status_code` 识别异常请求模式
+
+#### 安全用途
+- **访问审计**: 通过 `ip`、`user_id`、`api_key_id` 追踪用户行为
+- **异常检测**: 识别异常的 `user_agent` 或频繁的 4xx/5xx 错误
+- **限流控制**: 基于 `ip` 或 `api_key_id` 实施访问频率限制
+
+#### 调试用途
+- **问题定位**: 通过 `trace_id` 追踪完整请求链路
+- **性能优化**: 分析慢查询和高延迟请求
+- **错误分析**: 结合 `response` 和 `status_code` 排查具体问题
+
+## 日志系统架构总结
+
+### 数据流向
+```
+用户请求 → Gateway → Agent → AI服务 → Agent → Gateway → 用户响应
+     ↓        ↓        ↓         ↓        ↓        ↓
+  request_logs  agent_logs  外部服务日志  agent_logs  request_logs
+```
+
+### 日志关联关系
+- **request_logs** 记录所有进入网关的请求，包括认证失败的请求
+- **agent_logs** 记录成功的 AI 交互，包含完整的对话上下文
+- **api_key_stats** 记录 API Key 的使用统计，与 request_logs 通过 `api_key_id` 关联

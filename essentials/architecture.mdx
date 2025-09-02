@@ -7,6 +7,76 @@ description: "深入了解AI Gateway的技术架构和设计理念"
 
 AI Gateway 采用现代化的微服务架构设计，基于适配器模式实现多AI平台的统一接口。整个系统具有高可扩展性、高可用性和易于维护的特点。
 
+## 流程展示
+
+```mermaid
+graph TD
+    %% 定义节点
+    A[客户端应用]
+    B[AI Gateway<br/>FastAPI + Pydantic]
+    C{Agent Registry<br/>动态注册表}
+    L[统一响应格式<br/>UnifiedChatResponse]
+    
+    %% 定义主流程
+    A --> B
+    B --> C
+    
+    subgraph "Agent 分发"
+        direction LR
+        C --- D[FastGPT Agent<br/>RAG + 知识库]
+        C --- E[Dify Agent<br/>工作流 + 对话管理]
+        C --- F[Coze Agent<br/>Bot服务]
+        C --- G[其他 Agent...]
+    end
+    
+    subgraph "API 调用"
+        direction LR
+        D --> H[FastGPT API<br/>知识库检索]
+        E --> I[Dify API<br/>工作流执行]
+        F --> J[Coze API<br/>对话服务]
+        G --> K[其他平台 API]
+    end
+    
+    %% 定义响应统一和返回流程
+    H -.-> L
+    I -.-> L
+    J -.-> L
+    K -.-> L
+    L --> A
+    
+    %% 核心架构组件子图
+    subgraph "核心架构组件"
+        direction TB
+        M[BaseAgent<br/>抽象基类]
+        N[统一数据模型<br/>ChatRequest/Response]
+        O[异步处理<br/>高并发支持]
+        P[文件处理<br/>S3/MinIO集成]
+    end
+    
+    %% 定义继承关系
+    D -.->|继承| M
+    E -.->|继承| M
+    F -.->|继承| M
+    G -.->|继承| M
+    
+    %% 定义样式
+    classDef main fill:#e3f2fd,stroke:#333
+    classDef gateway fill:#f3e5f5,stroke:#333
+    classDef registry fill:#e8f5e8,stroke:#333
+    classDef agent fill:#c8e6c9,stroke:#333
+    classDef api fill:#e0f7fa,stroke:#333
+    classDef response fill:#fff3e0,stroke:#333
+    classDef component fill:#fce4ec,stroke:#333
+    
+    class A main
+    class B gateway
+    class C registry
+    class D,E,F,G agent
+    class H,I,J,K api
+    class L response
+    class M,N,O,P component
+```
+
 ## 核心设计模式
 
 ### 适配器模式 (Adapter Pattern)
