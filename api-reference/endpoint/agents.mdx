@@ -1,0 +1,116 @@
+---
+title: '获取Agent列表'
+openapi: 'GET /api/v1/agents'
+---
+
+## 概述
+
+获取当前系统中所有可用的AI Agent列表，包括每个Agent的详细信息和支持的功能。
+
+## 认证方式
+
+该接口不需要特殊的认证信息，可以直接访问。
+
+## 响应说明
+
+### 成功响应
+
+返回当前系统中所有已注册的Agent信息，包括Agent名称、类型、模块路径以及支持的功能特性。
+
+### 响应字段说明
+
+<ParamField response="success" type="boolean" required>
+请求是否成功执行
+</ParamField>
+
+<ParamField response="data.total" type="integer" required>
+当前注册的Agent总数量
+</ParamField>
+
+<ParamField response="data.agents" type="array" required>
+Agent列表，包含每个Agent的详细信息
+</ParamField>
+
+<ParamField response="data.agents[].name" type="string" required>
+Agent的名称，用于在API调用中指定
+</ParamField>
+
+<ParamField response="data.agents[].type" type="string" required>
+Agent的类型标识
+</ParamField>
+
+<ParamField response="data.agents[].module" type="string" required>
+Agent对应的后端模块路径
+</ParamField>
+
+<ParamField response="data.agents[].capabilities" type="object" required>
+Agent支持的功能特性
+</ParamField>
+
+<ParamField response="data.agents[].capabilities.streaming" type="boolean" required>
+是否支持流式传输
+</ParamField>
+
+<ParamField response="data.agents[].capabilities.file_upload" type="boolean" required>
+是否支持文件上传
+</ParamField>
+
+## 使用示例
+
+### 获取Agent列表
+
+```bash
+curl -X GET 'https://your-domain.com/api/v1/agents'
+```
+
+### 响应示例
+
+```json
+{
+  "success": true,
+  "data": {
+    "total": 2,
+    "agents": [
+      {
+        "name": "dify",
+        "type": "DifyAgent",
+        "module": "agent.dify",
+        "capabilities": {
+          "streaming": true,
+          "file_upload": true
+        }
+      },
+      {
+        "name": "fastgpt",
+        "type": "FastGPTAgent",
+        "module": "agent.fastgpt",
+        "capabilities": {
+          "streaming": true,
+          "file_upload": true
+        }
+      }
+    ]
+  }
+}
+```
+
+## 支持的Agent
+
+### Dify Agent
+- **名称**: `dify`
+- **类型**: DifyAgent
+- **功能**: 支持流式传输和文件上传
+- **用途**: 基于Dify平台的AI对话服务
+
+### FastGPT Agent
+- **名称**: `fastgpt`
+- **类型**: FastGPTAgent
+- **功能**: 支持流式传输和文件上传
+- **用途**: 基于FastGPT平台的AI对话服务
+
+## 使用建议
+
+1. **Agent选择**：根据您的具体需求选择合适的Agent
+2. **功能检查**：在调用前检查Agent支持的功能特性
+3. **兼容性**：确保您的应用逻辑与所选Agent的功能兼容
+4. **错误处理**：处理可能的Agent不可用情况

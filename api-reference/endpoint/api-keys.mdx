@@ -1,0 +1,144 @@
+---
+title: '创建API Key'
+openapi: 'POST /api/v1/api-keys'
+---
+
+## 概述
+
+创建新的API密钥，用于程序化的API访问。创建的API密钥可以用于聊天接口和其他需要认证的API端点。
+
+## 认证方式
+
+该接口需要用户已登录，使用访问令牌进行身份验证。
+
+### Header参数
+
+<ParamField header="Authorization" type="string" required>
+访问令牌，格式为：`Bearer your_access_token`
+</ParamField>
+
+## 请求参数
+
+### 请求体
+
+<ParamField body="name" type="string" required>
+API密钥的名称，用于标识该密钥的用途
+</ParamField>
+
+<ParamField body="description" type="string" required>
+API密钥的描述信息，说明该密钥的用途和权限范围
+</ParamField>
+
+<ParamField body="expires_at" type="string" required>
+API密钥的过期时间，格式为ISO 8601标准的时间字符串
+</ParamField>
+
+<ParamField body="permissions" type="array" required>
+API密钥的权限列表，例如：["chat", "upload"]
+</ParamField>
+
+## 响应说明
+
+### 成功响应
+
+创建成功后，系统会返回新创建的API密钥信息，包括完整的密钥字符串。
+
+### 响应字段说明
+
+<ParamField response="id" type="string" required>
+API密钥的唯一标识符
+</ParamField>
+
+<ParamField response="name" type="string" required>
+API密钥的名称
+</ParamField>
+
+<ParamField response="description" type="string" required>
+API密钥的描述信息
+</ParamField>
+
+<ParamField response="expires_at" type="string" required>
+API密钥的过期时间
+</ParamField>
+
+<ParamField response="permissions" type="array" required>
+API密钥的权限列表
+</ParamField>
+
+<ParamField response="is_active" type="boolean" required>
+API密钥是否处于激活状态
+</ParamField>
+
+<ParamField response="created_by" type="string" required>
+创建该API密钥的用户ID
+</ParamField>
+
+<ParamField response="full_key" type="string" required>
+完整的API密钥字符串，请妥善保存，此值只在创建时显示一次
+</ParamField>
+
+## 使用示例
+
+### 创建API密钥
+
+```bash
+curl -X POST 'https://your-domain.com/api/v1/api-keys' \\
+  -H 'Authorization: Bearer your_access_token' \\
+  -H 'Content-Type: application/json' \\
+  -d '{
+    "name": "聊天API专用密钥",
+    "description": "用于访问聊天和文件上传API的密钥",
+    "expires_at": "2024-12-31T23:59:59Z",
+    "permissions": ["chat", "upload"]
+  }'
+```
+
+### 响应示例
+
+```json
+{
+  "id": "key_789012",
+  "name": "聊天API专用密钥",
+  "description": "用于访问聊天和文件上传API的密钥",
+  "expires_at": "2024-12-31T23:59:59Z",
+  "permissions": ["chat", "upload"],
+  "is_active": true,
+  "created_by": "user_123456",
+  "full_key": "ccb37996e5582ccebda2f91f7146eef8e8349c5d562caa4b26d286afddf52968"
+}
+```
+
+## 权限说明
+
+### 可用权限
+
+- **chat**: 访问聊天接口的权限
+- **upload**: 文件上传权限
+- **admin**: 管理员权限（包含所有权限）
+
+### 权限组合
+
+您可以根据需要组合不同的权限：
+
+- 仅聊天权限：`["chat"]`
+- 聊天和上传权限：`["chat", "upload"]`
+- 完全权限：`["chat", "upload", "admin"]`
+
+## 安全建议
+
+1. **密钥保管**：创建后请立即保存`full_key`值，系统不会再次显示
+2. **最小权限**：遵循最小权限原则，只授予必要的权限
+3. **过期时间**：设置合理的过期时间，定期轮换密钥
+4. **密钥存储**：安全存储API密钥，避免在代码中硬编码
+5. **监控使用**：定期监控API密钥的使用情况
+6. **撤销机制**：发现密钥泄露时立即撤销并创建新密钥
+
+## 使用API密钥
+
+创建API密钥后，您可以在API请求的Header中使用：
+
+```bash
+-H 'Authorization: Bearer your_api_key'
+```
+
+注意：这与用户登录令牌的使用方式相同，但使用的是API密钥而非登录令牌。

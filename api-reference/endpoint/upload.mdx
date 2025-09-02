@@ -1,0 +1,196 @@
+---
+title: '文件上传接口'
+openapi: 'POST /api/v1/upload'
+---
+
+## 概述
+
+文件上传接口允许用户将文件上传到对象存储服务，支持多种文件类型（图片、文档、音频、视频等）。上传成功后返回文件的访问URL和元数据信息。
+
+## 认证方式
+
+该接口需要以下认证信息：
+- **Agent** (Header): 指定使用的Agent名称（必填）
+
+## 请求参数
+
+### Header参数
+| 参数名 | 类型 | 必填 | 描述 |
+|--------|------|------|------|
+| Agent | string | 是 | 指定使用的Agent名称，如：fastgpt、dify |
+
+### Body参数 (multipart/form-data)
+| 参数名 | 类型 | 必填 | 描述 |
+|--------|------|------|------|
+| file | binary | 是 | 需要上传的文件，支持多种格式 |
+| created_by | string | 是 | 创建者标识，用于记录上传者信息 |
+
+### 支持的文件类型
+- **图片**: jpg, jpeg, png, gif, webp, svg
+- **文档**: pdf, doc, docx, txt, md
+- **音频**: mp3, wav, ogg, flac
+- **视频**: mp4, avi, mov, wmv
+- **压缩包**: zip, rar, 7z
+
+### 文件大小限制
+- 单个文件最大支持：100MB
+- 建议文件大小：10MB以下获得最佳体验
+
+## 响应说明
+
+### 成功响应 (200)
+
+```json
+{
+  "code": 200,
+  "msg": "File uploaded successfully",
+  "data": {
+    "id": "https://s3.juniortree.com/xiao-x-bao/uploads/2025/09/01/b9cb193906b145939dc3d9cb6240b933.jpg",
+    "name": "example.jpg",
+    "size": 348514,
+    "extension": "jpg",
+    "mime_type": "image/jpeg",
+    "created_by": "xiaoming",
+    "created_at": 1756713029
+  }
+}
+```
+
+### 响应字段说明
+| 字段名 | 类型 | 描述 |
+|--------|------|------|
+| code | integer | 响应状态码，200表示成功 |
+| msg | string | 响应消息 |
+| data.id | string | 文件访问URL，可直接用于访问上传的文件 |
+| data.name | string | 原始文件名 |
+| data.size | integer | 文件大小（字节） |
+| data.extension | string | 文件扩展名 |
+| data.mime_type | string | 文件MIME类型 |
+| data.created_by | string | 上传者标识 |
+| data.created_at | integer | 上传时间戳（Unix时间戳） |
+
+## 使用示例
+
+### 使用curl上传文件
+
+```bash
+curl -X POST 'http://localhost:3000/api/v1/upload' \
+  -H 'Agent: fastgpt' \
+  -F 'file=@/path/to/your/file.jpg' \
+  -F 'created_by=user123'
+```
+
+### 使用Python上传文件
+
+```python
+import requests
+
+url = 'http://localhost:3000/api/v1/upload'
+headers = {
+    'Agent': 'fastgpt'
+}
+
+files = {
+    'file': open('document.pdf', 'rb')
+}
+
+data = {
+    'created_by': 'python_user'
+}
+
+response = requests.post(url, headers=headers, files=files, data=data)
+result = response.json()
+
+print(f"文件上传成功！访问URL: {result['data']['id']}")
+print(f"文件大小: {result['data']['size']} bytes")
+```
+
+### 使用JavaScript上传文件
+
+```javascript
+const formData = new FormData();
+formData.append('file', fileInput.files[0]);
+formData.append('created_by', 'web_user');
+
+fetch('http://localhost:3000/api/v1/upload', {
+  method: 'POST',
+  headers: {
+    'Agent': 'dify'
+  },
+  body: formData
+})
+.then(response => response.json())
+.then(data => {
+  console.log('上传成功:', data.data.id);
+})
+.catch(error => {
+  console.error('上传失败:', error);
+});
+```
+
+## 错误处理
+
+### 常见错误码
+| 错误码 | 描述 | 解决方案 |
+|--------|------|----------|
+| 400 | 参数错误 | 检查必填参数是否完整，文件是否为空 |
+| 413 | 文件过大 | 压缩文件或分批上传 |
+| 415 | 不支持的文件类型 | 检查文件扩展名是否在支持列表中 |
+| 500 | 服务器错误 | 稍后重试或联系技术支持 |
+
+### 错误响应示例
+
+```json
+{
+  "code": 400,
+  "msg": "Missing required parameter: file",
+  "detail": "请确保上传了文件"
+}
+```
+
+## 最佳实践
+
+### 1. 文件命名规范
+- 使用有意义的文件名，避免特殊字符
+- 建议使用英文命名，避免中文乱码问题
+- 文件名长度控制在50个字符以内
+
+### 2. 上传前检查
+- 验证文件大小是否符合要求
+- 检查文件类型是否在支持列表中
+- 确保网络连接稳定
+
+### 3. 安全性建议
+- 不要上传包含敏感信息的文件
+- 定期清理不需要的文件
+- 使用HTTPS协议进行上传
+
+### 4. 性能优化
+- 对于大文件，考虑使用分片上传
+- 压缩图片文件以减少传输时间
+- 避免同时上传多个大文件
+
+## 使用场景
+
+### 1. 聊天文件分享
+用户可以在聊天中上传图片、文档等文件，AI可以基于上传的文件内容进行回复。
+
+### 2. 知识库构建
+上传文档到知识库，供AI系统学习和回答相关问题。
+
+### 3. 多媒体处理
+上传音频、视频文件进行转录、分析或其他AI处理。
+
+## 注意事项
+
+<Warning>
+上传的文件将存储在云端，请确保不包含敏感或隐私信息。
+</Warning>
+
+<Note>
+文件URL有效期为永久，除非手动删除。建议定期清理不需要的文件以节省存储空间。
+</Note>
+
+<Tip>
+对于需要频繁访问的文件，建议缓存文件URL以提高访问速度。
+</Tip>

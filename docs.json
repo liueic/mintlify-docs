@@ -50,12 +50,28 @@
             ]
           },
           {
-            "group": "接口示例",
+            "group": "聊天接口",
             "pages": [
-              "api-reference/endpoint/get",
-              "api-reference/endpoint/create",
-              "api-reference/endpoint/delete",
-              "api-reference/endpoint/webhook"
+              "api-reference/endpoint/chat"
+            ]
+          },
+          {
+            "group": "文件上传",
+            "pages": [
+              "api-reference/endpoint/upload"
+            ]
+          },
+          {
+            "group": "Agent管理",
+            "pages": [
+              "api-reference/endpoint/agents"
+            ]
+          },
+          {
+            "group": "用户认证",
+            "pages": [
+              "api-reference/endpoint/login",
+              "api-reference/endpoint/api-keys"
             ]
           }
         ]

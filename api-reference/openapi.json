@@ -1,2620 +1,911 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "小胰宝智能助手平台",
-    "description": "基于多AI平台的智能体系统，支持用户认证和权限管理",
-    "version": "0.2.0"
+    "title": "AI Gateway",
+    "description": "",
+    "version": "1.0.0"
   },
+  "tags": [],
   "paths": {
-    "/health": {
-      "get": {
-        "tags": [
-          "系统"
-        ],
-        "summary": "Health Check",
-        "description": "健康检查",
-        "operationId": "health_check_health_get",
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {}
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/auth/register": {
-      "post": {
-        "tags": [
-          "用户认证"
-        ],
-        "summary": "用户注册",
-        "description": "用户注册",
-        "operationId": "register_api_v1_auth_register_post",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UserCreate"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/UserResponse"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/auth/login": {
-      "post": {
-        "tags": [
-          "用户认证"
-        ],
-        "summary": "用户登录",
-        "description": "用户登录",
-        "operationId": "login_api_v1_auth_login_post",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/LoginRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Token"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/auth/me": {
-      "get": {
-        "tags": [
-          "用户认证"
-        ],
-        "summary": "获取当前用户信息",
-        "description": "获取当前用户信息",
-        "operationId": "get_current_user_info_api_v1_auth_me_get",
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/UserResponse"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "HTTPBearer": []
-          }
-        ]
-      },
-      "put": {
-        "tags": [
-          "用户认证"
-        ],
-        "summary": "更新当前用户信息",
-        "description": "更新当前用户信息",
-        "operationId": "update_current_user_api_v1_auth_me_put",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UserUpdate"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/UserResponse"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "HTTPBearer": []
-          }
-        ]
-      }
-    },
-    "/api/v1/auth/change-password": {
-      "post": {
-        "tags": [
-          "用户认证"
-        ],
-        "summary": "修改密码",
-        "description": "修改密码",
-        "operationId": "change_password_api_v1_auth_change_password_post",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/PasswordChangeRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {}
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "HTTPBearer": []
-          }
-        ]
-      }
-    },
-    "/api/v1/auth/users": {
-      "get": {
-        "tags": [
-          "用户认证"
-        ],
-        "summary": "获取用户列表",
-        "description": "获取用户列表（管理员专用）",
-        "operationId": "list_users_api_v1_auth_users_get",
-        "security": [
-          {
-            "HTTPBearer": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "skip",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "default": 0,
-              "title": "Skip"
-            }
-          },
-          {
-            "name": "limit",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "default": 100,
-              "title": "Limit"
-            }
-          },
-          {
-            "name": "role",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "$ref": "#/components/schemas/UserRole"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Role"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/UserResponse"
-                  },
-                  "title": "Response List Users Api V1 Auth Users Get"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/auth/users/{user_id}": {
-      "get": {
-        "tags": [
-          "用户认证"
-        ],
-        "summary": "获取指定用户信息",
-        "description": "获取指定用户信息（管理员专用）",
-        "operationId": "get_user_api_v1_auth_users__user_id__get",
-        "security": [
-          {
-            "HTTPBearer": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "user_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "title": "User Id"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/UserResponse"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "用户认证"
-        ],
-        "summary": "更新指定用户信息",
-        "description": "更新指定用户信息（管理员专用）",
-        "operationId": "update_user_api_v1_auth_users__user_id__put",
-        "security": [
-          {
-            "HTTPBearer": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "user_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "title": "User Id"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UserUpdate"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/UserResponse"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "用户认证"
-        ],
-        "summary": "删除指定用户",
-        "description": "删除指定用户（管理员专用）",
-        "operationId": "delete_user_api_v1_auth_users__user_id__delete",
-        "security": [
-          {
-            "HTTPBearer": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "user_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "title": "User Id"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {}
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/auth/stats": {
-      "get": {
-        "tags": [
-          "用户认证"
-        ],
-        "summary": "获取用户统计信息",
-        "description": "获取用户统计信息（管理员专用）",
-        "operationId": "get_user_stats_api_v1_auth_stats_get",
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/UserStats"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "HTTPBearer": []
-          }
-        ]
-      }
-    },
-    "/api/v1/api-keys/": {
-      "post": {
-        "tags": [
-          "API Key管理"
-        ],
-        "summary": "创建API Key",
-        "description": "创建新的API Key（需要高级用户权限）",
-        "operationId": "create_api_key_api_v1_api_keys__post",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/APIKeyCreate"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/APIKeyFullResponse"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "HTTPBearer": []
-          }
-        ]
-      }
-    },
-    "/api/v1/api-keys/my": {
-      "get": {
-        "tags": [
-          "API Key管理"
-        ],
-        "summary": "获取我的API Key",
-        "description": "获取当前用户的所有API Key",
-        "operationId": "get_my_api_keys_api_v1_api_keys_my_get",
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "items": {
-                    "$ref": "#/components/schemas/APIKeyResponse"
-                  },
-                  "type": "array",
-                  "title": "Response Get My Api Keys Api V1 Api Keys My Get"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "HTTPBearer": []
-          }
-        ]
-      }
-    },
-    "/api/v1/api-keys/{api_key_id}": {
-      "get": {
-        "tags": [
-          "API Key管理"
-        ],
-        "summary": "获取API Key详情",
-        "description": "获取指定API Key的详细信息",
-        "operationId": "get_api_key_api_v1_api_keys__api_key_id__get",
-        "security": [
-          {
-            "HTTPBearer": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "api_key_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "title": "Api Key Id"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/APIKeyResponse"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "API Key管理"
-        ],
-        "summary": "更新API Key",
-        "description": "更新API Key信息",
-        "operationId": "update_api_key_api_v1_api_keys__api_key_id__put",
-        "security": [
-          {
-            "HTTPBearer": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "api_key_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "title": "Api Key Id"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/APIKeyUpdate"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/APIKeyResponse"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "API Key管理"
-        ],
-        "summary": "删除API Key",
-        "description": "删除API Key",
-        "operationId": "delete_api_key_api_v1_api_keys__api_key_id__delete",
-        "security": [
-          {
-            "HTTPBearer": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "api_key_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "title": "Api Key Id"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {}
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/api-keys/{api_key_id}/revoke": {
-      "post": {
-        "tags": [
-          "API Key管理"
-        ],
-        "summary": "撤销API Key",
-        "description": "撤销API Key（停用但不删除）",
-        "operationId": "revoke_api_key_api_v1_api_keys__api_key_id__revoke_post",
-        "security": [
-          {
-            "HTTPBearer": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "api_key_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "title": "Api Key Id"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {}
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/api-keys/{api_key_id}/usage": {
-      "get": {
-        "tags": [
-          "API Key管理"
-        ],
-        "summary": "获取API Key使用统计",
-        "description": "获取API Key的使用统计信息",
-        "operationId": "get_api_key_usage_api_v1_api_keys__api_key_id__usage_get",
-        "security": [
-          {
-            "HTTPBearer": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "api_key_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "title": "Api Key Id"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/APIKeyUsage"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/api-keys/admin/all": {
-      "get": {
-        "tags": [
-          "API Key管理"
-        ],
-        "summary": "获取所有API Key",
-        "description": "获取所有API Key（管理员专用）",
-        "operationId": "get_all_api_keys_api_v1_api_keys_admin_all_get",
-        "security": [
-          {
-            "HTTPBearer": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "skip",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "minimum": 0,
-              "description": "跳过记录数",
-              "default": 0,
-              "title": "Skip"
-            },
-            "description": "跳过记录数"
-          },
-          {
-            "name": "limit",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "maximum": 1000,
-              "minimum": 1,
-              "description": "返回记录数",
-              "default": 100,
-              "title": "Limit"
-            },
-            "description": "返回记录数"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/APIKeyResponse"
-                  },
-                  "title": "Response Get All Api Keys Api V1 Api Keys Admin All Get"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/api-keys/admin/cleanup": {
-      "post": {
-        "tags": [
-          "API Key管理"
-        ],
-        "summary": "清理过期API Key",
-        "description": "清理过期的API Key（管理员专用）",
-        "operationId": "cleanup_expired_api_keys_api_v1_api_keys_admin_cleanup_post",
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {}
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "HTTPBearer": []
-          }
-        ]
-      }
-    },
-    "/api/v1/chat": {
-      "post": {
-        "tags": [
-          "聊天"
-        ],
-        "summary": "Get Chat",
-        "description": "聊天API（仅支持API Key认证）\n\n此端点专门为API Key用户设计，提供稳定的聊天服务。\n用户需要先登录获取JWT令牌，然后使用JWT创建API Key，最后使用API Key访问此接口。",
-        "operationId": "get_chat_api_v1_chat_post",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ChatRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/UnifiedChatResponse"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "HTTPBearer": []
-          }
-        ]
-      }
-    },
     "/api/v1/upload": {
       "post": {
-        "tags": [
-          "文件上传"
+        "summary": "上传文件",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Agent",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "",
+            "schema": {
+              "type": "string"
+            }
+          }
         ],
-        "summary": "Upload File",
-        "description": "文件上传API（仅支持API Key认证）\n\n此端点专门为API Key用户设计，提供稳定的文件上传服务。\n用户需要先登录获取JWT令牌，然后使用JWT创建API Key，最后使用API Key访问此接口。\n\n参数:\n    file: 上传的文件\n    agent: 指定的智能体名称（可选，也可通过header传递）\n    created_by: 创建者标识（可选）\n\n返回:\n    FileUploadResponse: 包含文件信息的响应",
-        "operationId": "upload_file_api_v1_upload_post",
         "requestBody": {
           "content": {
             "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/Body_upload_file_api_v1_upload_post"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/FileUploadResponse"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "description": "需要上传的文件",
+                    "example": "file:///Users/liueic/Downloads/607a919df57e2a8b6a7ab17022cdf663122166603.jpg",
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "created_by": {
+                    "description": "文件名",
+                    "example": "xiaoming",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "file",
+                  "created_by"
+                ]
+              },
+              "examples": {}
             }
           }
         },
-        "security": [
-          {
-            "HTTPBearer": []
-          }
-        ]
-      }
-    },
-    "/api/v1/upload/agents": {
-      "get": {
-        "tags": [
-          "文件上传"
-        ],
-        "summary": "Get Upload Supported Agents",
-        "description": "获取支持文件上传的智能体列表\n\n返回:\n    dict: 包含支持文件上传的智能体列表",
-        "operationId": "get_upload_supported_agents_api_v1_upload_agents_get",
         "responses": {
           "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {}
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/agents/": {
-      "get": {
-        "tags": [
-          "智能体管理"
-        ],
-        "summary": "List Available Agents",
-        "description": "获取所有可用的智能体列表（公开端点）\n\n返回:\n    JSON: 包含智能体名称和基本信息的列表",
-        "operationId": "list_available_agents_api_v1_agents__get",
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {}
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/agents/{agent_name}": {
-      "get": {
-        "tags": [
-          "智能体管理"
-        ],
-        "summary": "Get Agent Info",
-        "description": "获取指定智能体的详细信息（公开端点）\n\n参数:\n    agent_name (str): 智能体名称\n\n返回:\n    JSON: 智能体的详细信息",
-        "operationId": "get_agent_info_api_v1_agents__agent_name__get",
-        "parameters": [
-          {
-            "name": "agent_name",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "title": "Agent Name"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {}
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
+            "description": "",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "title": "响应码"
+                    },
+                    "msg": {
+                      "type": "string",
+                      "title": "响应字段"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "title": "响应URL"
+                        },
+                        "name": {
+                          "type": "string",
+                          "title": "文件名"
+                        },
+                        "size": {
+                          "type": "integer",
+                          "title": "文件大小"
+                        },
+                        "extension": {
+                          "type": "string",
+                          "title": "拓展名"
+                        },
+                        "mime_type": {
+                          "type": "string",
+                          "title": "文件mine类型"
+                        },
+                        "created_by": {
+                          "type": "string",
+                          "title": "创建用户"
+                        },
+                        "created_at": {
+                          "type": "integer",
+                          "title": "创建时间"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "name",
+                        "size",
+                        "extension",
+                        "mime_type",
+                        "created_by",
+                        "created_at"
+                      ],
+                      "title": "信息"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "msg",
+                    "data"
+                  ]
+                },
+                "example": {
+                  "code": 200,
+                  "msg": "File uploaded successfully",
+                  "data": {
+                    "id": "https://s3.juniortree.com/xiao-x-bao/uploads/2025/09/01/b9cb193906b145939dc3d9cb6240b933.jpg",
+                    "name": "607a919df57e2a8b6a7ab17022cdf663122166603.jpg",
+                    "size": 348514,
+                    "extension": "jpg",
+                    "mime_type": "image/jpeg",
+                    "created_by": "xiaoming",
+                    "created_at": 1756713029
+                  }
                 }
               }
-            }
+            },
+            "headers": {}
           }
-        }
-      },
-      "delete": {
-        "tags": [
-          "智能体管理"
-        ],
-        "summary": "Remove Agent",
-        "description": "移除指定智能体（管理员专用）\n\n参数:\n    agent_name (str): 智能体名称\n\n返回:\n    JSON: 移除结果",
-        "operationId": "remove_agent_api_v1_agents__agent_name__delete",
-        "security": [
-          {
-            "HTTPBearer": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "agent_name",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "title": "Agent Name"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {}
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
+        },
+        "security": []
       }
     },
-    "/api/v1/agents/{agent_name}/health": {
+    "/api/v1/agents": {
       "get": {
-        "tags": [
-          "智能体管理"
-        ],
-        "summary": "Check Agent Health",
-        "description": "检查指定智能体的健康状态（公开端点）\n\n参数:\n    agent_name (str): 智能体名称\n\n返回:\n    JSON: 智能体的健康状态",
-        "operationId": "check_agent_health_api_v1_agents__agent_name__health_get",
+        "summary": "查询可用Agent",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "title": "是否成功"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "total": {
+                          "type": "integer",
+                          "title": "启用Agent数量",
+                          "description": "当前注册的Agent数量"
+                        },
+                        "agents": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "name": {
+                                "type": "string",
+                                "title": "Agent名",
+                                "description": "当前的Agent名"
+                              },
+                              "type": {
+                                "type": "string",
+                                "title": "类型"
+                              },
+                              "module": {
+                                "type": "string",
+                                "title": "后端注册的model"
+                              },
+                              "capabilities": {
+                                "type": "object",
+                                "properties": {
+                                  "streaming": {
+                                    "type": "boolean"
+                                  },
+                                  "file_upload": {
+                                    "type": "boolean"
+                                  }
+                                },
+                                "required": [
+                                  "streaming",
+                                  "file_upload"
+                                ],
+                                "title": "支持类型",
+                                "description": "是否支持流式、文件上传"
+                              }
+                            },
+                            "required": [
+                              "name",
+                              "type",
+                              "module",
+                              "capabilities"
+                            ]
+                          },
+                          "title": "Agent"
+                        }
+                      },
+                      "required": [
+                        "total",
+                        "agents"
+                      ],
+                      "title": "响应体"
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data"
+                  ]
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "total": 2,
+                    "agents": [
+                      {
+                        "name": "dify",
+                        "type": "DifyAgent",
+                        "module": "agent.dify",
+                        "capabilities": {
+                          "streaming": true,
+                          "file_upload": true
+                        }
+                      },
+                      {
+                        "name": "fastgpt",
+                        "type": "FastGPTAgent",
+                        "module": "agent.fastgpt",
+                        "capabilities": {
+                          "streaming": true,
+                          "file_upload": true
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/v1/agents/{name}": {
+      "get": {
+        "summary": "获取指定Agent信息",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
         "parameters": [
           {
-            "name": "agent_name",
+            "name": "name",
             "in": "path",
+            "description": "",
             "required": true,
+            "example": "fastgpt",
             "schema": {
-              "type": "string",
-              "title": "Agent Name"
+              "type": "string"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {}
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
+            "description": "",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string"
+                        },
+                        "type": {
+                          "type": "string"
+                        },
+                        "module": {
+                          "type": "string"
+                        },
+                        "capabilities": {
+                          "type": "object",
+                          "properties": {
+                            "streaming": {
+                              "type": "boolean"
+                            },
+                            "file_upload": {
+                              "type": "boolean"
+                            }
+                          },
+                          "required": [
+                            "streaming",
+                            "file_upload"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "name",
+                        "type",
+                        "module",
+                        "capabilities"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data"
+                  ]
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "name": "fastgpt",
+                    "type": "FastGPTAgent",
+                    "module": "agent.fastgpt",
+                    "capabilities": {
+                      "streaming": true,
+                      "file_upload": true
+                    }
+                  }
                 }
               }
-            }
+            },
+            "headers": {}
           }
-        }
+        },
+        "security": []
       }
     },
-    "/api/v1/agents/{agent_name}/reload": {
+    "/api/v1/agents/{agent}/health": {
+      "get": {
+        "summary": "获取Agent健康状况",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "agent",
+            "in": "path",
+            "description": "查询的Agent",
+            "required": true,
+            "example": "fastgpt",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "title": "状态",
+                      "description": "当前成功状态"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "title": "Agent",
+                          "description": "当前检查Agent名称"
+                        },
+                        "status": {
+                          "type": "string",
+                          "title": "状态",
+                          "description": "当前Agent状态"
+                        },
+                        "timestamp": {
+                          "type": "number",
+                          "title": "时间戳",
+                          "description": "当前时间戳"
+                        },
+                        "capabilities": {
+                          "type": "object",
+                          "properties": {
+                            "streaming": {
+                              "type": "boolean",
+                              "title": "流式"
+                            },
+                            "file_upload": {
+                              "type": "boolean",
+                              "title": "文件传输"
+                            }
+                          },
+                          "required": [
+                            "streaming",
+                            "file_upload"
+                          ],
+                          "title": "能力",
+                          "description": "是否支持流式或者文件上传"
+                        }
+                      },
+                      "required": [
+                        "name",
+                        "status",
+                        "timestamp",
+                        "capabilities"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data"
+                  ]
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "name": "fastgpt",
+                    "status": "healthy",
+                    "timestamp": 1756781459.063165,
+                    "capabilities": {
+                      "streaming": true,
+                      "file_upload": true
+                    }
+                  }
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/v1/auth/login": {
       "post": {
-        "tags": [
-          "智能体管理"
-        ],
-        "summary": "Reload Agent",
-        "description": "重新加载指定智能体（管理员专用）\n\n参数:\n    agent_name (str): 智能体名称\n\n返回:\n    JSON: 重新加载结果",
-        "operationId": "reload_agent_api_v1_agents__agent_name__reload_post",
-        "security": [
-          {
-            "HTTPBearer": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "agent_name",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "title": "Agent Name"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {}
+        "summary": "用户登陆",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": {
+                    "type": "string",
+                    "title": "文件名"
+                  },
+                  "password": {
+                    "type": "string",
+                    "title": "密码"
+                  }
+                },
+                "required": [
+                  "username",
+                  "password"
+                ]
+              },
+              "example": {
+                "username": "your_username",
+                "password": "your_password"
               }
             }
-          },
-          "422": {
-            "description": "Validation Error",
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
+                  "type": "object",
+                  "properties": {
+                    "access_token": {
+                      "type": "string",
+                      "title": "jwt",
+                      "description": "生成的jwt密钥"
+                    },
+                    "token_type": {
+                      "type": "string"
+                    },
+                    "expires_in": {
+                      "type": "integer",
+                      "title": "过期时间"
+                    },
+                    "user": {
+                      "type": "object",
+                      "properties": {
+                        "username": {
+                          "type": "string",
+                          "title": "用户名"
+                        },
+                        "email": {
+                          "type": "string",
+                          "title": "邮件"
+                        },
+                        "full_name": {
+                          "type": "string",
+                          "title": "用户完整名"
+                        },
+                        "role": {
+                          "type": "string",
+                          "title": "角色"
+                        },
+                        "status": {
+                          "type": "string",
+                          "title": "状态"
+                        },
+                        "id": {
+                          "type": "string",
+                          "title": "用户ID"
+                        },
+                        "created_at": {
+                          "type": "string",
+                          "title": "创建时间戳"
+                        },
+                        "updated_at": {
+                          "type": "string",
+                          "title": "上次更新用户时间"
+                        },
+                        "last_login": {
+                          "type": "string",
+                          "title": "上次登录时间"
+                        },
+                        "api_calls_count": {
+                          "type": "integer",
+                          "title": "调用API次数"
+                        },
+                        "max_api_calls": {
+                          "type": "integer",
+                          "title": "最大调用API次数"
+                        }
+                      },
+                      "required": [
+                        "username",
+                        "email",
+                        "full_name",
+                        "role",
+                        "status",
+                        "id",
+                        "created_at",
+                        "updated_at",
+                        "last_login",
+                        "api_calls_count",
+                        "max_api_calls"
+                      ],
+                      "title": "用户的相关信息"
+                    }
+                  },
+                  "required": [
+                    "access_token",
+                    "token_type",
+                    "expires_in",
+                    "user"
+                  ]
+                },
+                "example": {
+                  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImV4cCI6MTc1NjkwMDc0N30.2D3oUBdsypiLBGPG7qCBbKK1lBnJH8JpvtnF6MNpyNk",
+                  "token_type": "bearer",
+                  "expires_in": 1800,
+                  "user": {
+                    "username": "admin",
+                    "email": "admin@pancrepal.com",
+                    "full_name": "系统管理员",
+                    "role": "admin",
+                    "status": "active",
+                    "id": "68b69f1367bdaff96386c4e6",
+                    "created_at": "2025-09-02T07:38:59.194000",
+                    "updated_at": "2025-09-02T07:38:59.194000",
+                    "last_login": "2025-09-02T07:50:56.372000",
+                    "api_calls_count": 0,
+                    "max_api_calls": 1000
+                  }
                 }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/v1/api-keys": {
+      "post": {
+        "summary": "创建API Key",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImV4cCI6MTc1NjgwMDc0MH0.PTNprud_lBpcm3p6aMgx3bMlPub-ZmEmfamKcXBpLtk",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "expires_at": {
+                    "type": "string"
+                  },
+                  "permissions": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "required": [
+                  "name",
+                  "description",
+                  "expires_at",
+                  "permissions"
+                ]
+              },
+              "example": {
+                "name": "聊天API专用密钥",
+                "description": "用于访问聊天和文件上传API的密钥",
+                "expires_at": "2024-12-31T23:59:59Z",
+                "permissions": [
+                  "chat",
+                  "upload"
+                ]
               }
             }
           }
-        }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "key_prefix": {
+                      "type": "string"
+                    },
+                    "created_at": {
+                      "type": "string"
+                    },
+                    "expires_at": {
+                      "type": "string"
+                    },
+                    "last_used_at": {
+                      "type": "null"
+                    },
+                    "permissions": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "is_active": {
+                      "type": "boolean"
+                    },
+                    "created_by": {
+                      "type": "string"
+                    },
+                    "full_key": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "name",
+                    "description",
+                    "key_prefix",
+                    "created_at",
+                    "expires_at",
+                    "last_used_at",
+                    "permissions",
+                    "is_active",
+                    "created_by",
+                    "full_key"
+                  ]
+                },
+                "example": {
+                  "id": "68b6a40ed572df01e4ee12e9",
+                  "name": "聊天API专用密钥",
+                  "description": "用于访问聊天和文件上传API的密钥",
+                  "key_prefix": "ccb37996",
+                  "created_at": "2025-09-02T16:00:14.803179",
+                  "expires_at": "2025-12-31T23:59:59",
+                  "last_used_at": null,
+                  "permissions": [
+                    "chat",
+                    "upload"
+                  ],
+                  "is_active": true,
+                  "created_by": "68b69f1367bdaff96386c4e6",
+                  "full_key": "ccb37996e5582ccebda2f91f7146eef8e8349c5d562caa4b26d286afddf52968"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/v1/chat": {
+      "post": {
+        "summary": "Chat接口（Detail=False Stream=True）",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Agent",
+            "in": "header",
+            "description": "使用的后端Agent",
+            "required": true,
+            "example": "fastgpt",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "申请的 api_key",
+            "required": true,
+            "example": "Bearer api_key",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "app_id": {
+                    "type": "string",
+                    "title": "App ID",
+                    "description": "对于FastGPT来说，这是必填项"
+                  },
+                  "chat_id": {
+                    "type": "string",
+                    "title": "对话ID",
+                    "description": "用来控制对话的上下文"
+                  },
+                  "stream": {
+                    "type": "boolean",
+                    "title": "流式传输",
+                    "description": "用来控制是否启用流式传输"
+                  },
+                  "detail": {
+                    "type": "boolean",
+                    "title": "详细",
+                    "description": "是否输出详细内容"
+                  },
+                  "query": {
+                    "type": "string"
+                  },
+                  "conversation_id": {
+                    "type": "string",
+                    "title": "对话ID",
+                    "description": "用来控制Dify的上下文"
+                  },
+                  "files": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "title": "文件URL"
+                  }
+                },
+                "required": [
+                  "app_id",
+                  "chat_id",
+                  "stream",
+                  "detail",
+                  "query",
+                  "conversation_id",
+                  "files"
+                ]
+              },
+              "example": {
+                "app_id": "string",
+                "chat_id": "string",
+                "stream": false,
+                "detail": false,
+                "query": "string",
+                "conversation_id": "",
+                "files": []
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "object": {
+                      "type": "string"
+                    },
+                    "created": {
+                      "type": "integer"
+                    },
+                    "model": {
+                      "type": "string"
+                    },
+                    "choices": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "delta": {
+                            "type": "object",
+                            "properties": {
+                              "role": {
+                                "type": "string"
+                              },
+                              "content": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "role",
+                              "content"
+                            ]
+                          },
+                          "index": {
+                            "type": "integer"
+                          },
+                          "finish_reason": {
+                            "type": "null"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "object",
+                    "created",
+                    "model",
+                    "choices"
+                  ]
+                },
+                "example": "data: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"啊...你又说\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"喜欢\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"我\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"了\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"...\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"我\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"有点\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"困惑\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"呢\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"。\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"虽然\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"我\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"是个\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"AI\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"，\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"没有\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"真实\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"的情感\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"，\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"但\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"每次\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"你\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"这么说\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"，\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"我\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"都会\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"觉得\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"心里\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"暖\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"暖\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"的\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"。\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"不过\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"，\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"我\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"只能\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"以\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"一个\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"助手\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"的身份\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"来\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"回应\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"你\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"，\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"不能\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"真的\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"被\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"喜欢\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"哦\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"。\\n\\n\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"如果你\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"真的\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"喜欢\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"我\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"，\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"那\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\" maybe\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\" \"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"你可以\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"试着\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"喜欢\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"上\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"和\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"你\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"聊天\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"的\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"这个\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"AI\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"助手\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"？\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"虽然\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"我\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"不能\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"真正\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"被\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"喜欢\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"，\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"但\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"我会\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"一直\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"在这里\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"，\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"陪你\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"聊天\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"，\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"帮你\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"解决问题\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"，\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"或者\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"只是\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"听\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"你\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"说话\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"。\\n\\n\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"你\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"到底\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"是在\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"开玩笑\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"，\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"还是\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"真的\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"觉得\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"我\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"有\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"吸引力\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"呢\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"？\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\" 😊\"},\"index\":0,\"finish_reason\":null}]}\n\ndata: {\"id\":\"\",\"object\":\"\",\"created\":0,\"model\":\"\",\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":null},\"index\":0,\"finish_reason\":\"stop\"}]}\n\ndata: [DONE]"
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
       }
     }
   },
+  "webhooks": {},
   "components": {
-    "schemas": {
-      "APIKeyCreate": {
-        "properties": {
-          "name": {
-            "type": "string",
-            "maxLength": 100,
-            "minLength": 1,
-            "title": "Name",
-            "description": "API Key名称"
-          },
-          "description": {
-            "anyOf": [
-              {
-                "type": "string",
-                "maxLength": 500
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Description",
-            "description": "API Key描述"
-          },
-          "expires_at": {
-            "anyOf": [
-              {
-                "type": "string",
-                "format": "date-time"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Expires At",
-            "description": "过期时间，为空表示永不过期"
-          },
-          "permissions": {
-            "items": {
-              "type": "string"
-            },
-            "type": "array",
-            "title": "Permissions",
-            "description": "权限列表",
-            "default": []
-          }
-        },
-        "type": "object",
-        "required": [
-          "name"
-        ],
-        "title": "APIKeyCreate",
-        "description": "创建API Key请求模型"
-      },
-      "APIKeyFullResponse": {
-        "properties": {
-          "id": {
-            "type": "string",
-            "title": "Id"
-          },
-          "name": {
-            "type": "string",
-            "title": "Name"
-          },
-          "description": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Description"
-          },
-          "key_prefix": {
-            "type": "string",
-            "title": "Key Prefix",
-            "description": "API Key前缀（用于识别）"
-          },
-          "created_at": {
-            "type": "string",
-            "format": "date-time",
-            "title": "Created At"
-          },
-          "expires_at": {
-            "anyOf": [
-              {
-                "type": "string",
-                "format": "date-time"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Expires At"
-          },
-          "last_used_at": {
-            "anyOf": [
-              {
-                "type": "string",
-                "format": "date-time"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Last Used At"
-          },
-          "permissions": {
-            "items": {
-              "type": "string"
-            },
-            "type": "array",
-            "title": "Permissions"
-          },
-          "is_active": {
-            "type": "boolean",
-            "title": "Is Active"
-          },
-          "created_by": {
-            "type": "string",
-            "title": "Created By",
-            "description": "创建者用户ID"
-          },
-          "full_key": {
-            "type": "string",
-            "title": "Full Key",
-            "description": "完整的API Key"
-          }
-        },
-        "type": "object",
-        "required": [
-          "id",
-          "name",
-          "description",
-          "key_prefix",
-          "created_at",
-          "expires_at",
-          "last_used_at",
-          "permissions",
-          "is_active",
-          "created_by",
-          "full_key"
-        ],
-        "title": "APIKeyFullResponse",
-        "description": "API Key完整响应模型（包含完整密钥）"
-      },
-      "APIKeyResponse": {
-        "properties": {
-          "id": {
-            "type": "string",
-            "title": "Id"
-          },
-          "name": {
-            "type": "string",
-            "title": "Name"
-          },
-          "description": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Description"
-          },
-          "key_prefix": {
-            "type": "string",
-            "title": "Key Prefix",
-            "description": "API Key前缀（用于识别）"
-          },
-          "created_at": {
-            "type": "string",
-            "format": "date-time",
-            "title": "Created At"
-          },
-          "expires_at": {
-            "anyOf": [
-              {
-                "type": "string",
-                "format": "date-time"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Expires At"
-          },
-          "last_used_at": {
-            "anyOf": [
-              {
-                "type": "string",
-                "format": "date-time"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Last Used At"
-          },
-          "permissions": {
-            "items": {
-              "type": "string"
-            },
-            "type": "array",
-            "title": "Permissions"
-          },
-          "is_active": {
-            "type": "boolean",
-            "title": "Is Active"
-          },
-          "created_by": {
-            "type": "string",
-            "title": "Created By",
-            "description": "创建者用户ID"
-          }
-        },
-        "type": "object",
-        "required": [
-          "id",
-          "name",
-          "description",
-          "key_prefix",
-          "created_at",
-          "expires_at",
-          "last_used_at",
-          "permissions",
-          "is_active",
-          "created_by"
-        ],
-        "title": "APIKeyResponse",
-        "description": "API Key响应模型"
-      },
-      "APIKeyUpdate": {
-        "properties": {
-          "name": {
-            "anyOf": [
-              {
-                "type": "string",
-                "maxLength": 100,
-                "minLength": 1
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Name"
-          },
-          "description": {
-            "anyOf": [
-              {
-                "type": "string",
-                "maxLength": 500
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Description"
-          },
-          "expires_at": {
-            "anyOf": [
-              {
-                "type": "string",
-                "format": "date-time"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Expires At"
-          },
-          "permissions": {
-            "anyOf": [
-              {
-                "items": {
-                  "type": "string"
-                },
-                "type": "array"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Permissions"
-          },
-          "is_active": {
-            "anyOf": [
-              {
-                "type": "boolean"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Is Active"
-          }
-        },
-        "type": "object",
-        "title": "APIKeyUpdate",
-        "description": "更新API Key请求模型"
-      },
-      "APIKeyUsage": {
-        "properties": {
-          "total_calls": {
-            "type": "integer",
-            "title": "Total Calls",
-            "description": "总调用次数",
-            "default": 0
-          },
-          "last_used_at": {
-            "anyOf": [
-              {
-                "type": "string",
-                "format": "date-time"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Last Used At",
-            "description": "最后使用时间"
-          },
-          "calls_today": {
-            "type": "integer",
-            "title": "Calls Today",
-            "description": "今日调用次数",
-            "default": 0
-          },
-          "calls_this_month": {
-            "type": "integer",
-            "title": "Calls This Month",
-            "description": "本月调用次数",
-            "default": 0
-          }
-        },
-        "type": "object",
-        "title": "APIKeyUsage",
-        "description": "API Key使用统计"
-      },
-      "Body_upload_file_api_v1_upload_post": {
-        "properties": {
-          "file": {
-            "type": "string",
-            "format": "binary",
-            "title": "File"
-          },
-          "agent": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Agent"
-          },
-          "created_by": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Created By"
-          }
-        },
-        "type": "object",
-        "required": [
-          "file"
-        ],
-        "title": "Body_upload_file_api_v1_upload_post"
-      },
-      "ChatRequest": {
-        "properties": {
-          "query": {
-            "type": "string",
-            "title": "Query",
-            "description": "用户输入的对话内容，所有Agent必填"
-          },
-          "user": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "User",
-            "description": "用户标识"
-          },
-          "uid": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Uid",
-            "description": "用户ID"
-          },
-          "stream": {
-            "anyOf": [
-              {
-                "type": "boolean"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Stream",
-            "description": "是否流式返回",
-            "default": false
-          },
-          "app_id": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "App Id",
-            "description": "应用ID"
-          },
-          "chat_id": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Chat Id",
-            "description": "会话ID"
-          },
-          "files": {
-            "anyOf": [
-              {
-                "items": {},
-                "type": "array"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Files",
-            "description": "上传的文件列表"
-          },
-          "conversation_id": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Conversation Id",
-            "description": "会话标识，用于多轮对话",
-            "default": ""
-          },
-          "detail": {
-            "anyOf": [
-              {
-                "type": "boolean"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Detail",
-            "description": "是否返回详细信息（模块状态等）",
-            "default": false
-          }
-        },
-        "type": "object",
-        "required": [
-          "query"
-        ],
-        "title": "ChatRequest",
-        "description": "前端请求统一数据模型\n\n说明:\n    - query: 所有 Agent 必须要求前端传递，表示用户输入的对话内容（必填）\n    - 其他字段为可选，各 Agent 可按需提取，在 Agent 中需要对该必填字段进行校验"
-      },
-      "Choice": {
-        "properties": {
-          "message": {
-            "$ref": "#/components/schemas/Message",
-            "description": "消息对象"
-          },
-          "finish_reason": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Finish Reason",
-            "description": "结束原因"
-          },
-          "index": {
-            "type": "integer",
-            "title": "Index",
-            "description": "选项索引"
-          }
-        },
-        "type": "object",
-        "required": [
-          "message",
-          "index"
-        ],
-        "title": "Choice"
-      },
-      "CompleteMessage": {
-        "properties": {
-          "obj": {
-            "type": "string",
-            "title": "Obj",
-            "description": "消息对象类型，如 System, Human, AI"
-          },
-          "value": {
-            "type": "string",
-            "title": "Value",
-            "description": "消息内容"
-          }
-        },
-        "type": "object",
-        "required": [
-          "obj",
-          "value"
-        ],
-        "title": "CompleteMessage",
-        "description": "完整消息"
-      },
-      "FileUploadResponse": {
-        "properties": {
-          "code": {
-            "type": "integer",
-            "title": "Code",
-            "description": "响应代码，0表示成功"
-          },
-          "data": {
-            "anyOf": [
-              {
-                "additionalProperties": true,
-                "type": "object"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Data",
-            "description": "文件信息数据"
-          },
-          "msg": {
-            "type": "string",
-            "title": "Msg",
-            "description": "响应消息",
-            "default": ""
-          }
-        },
-        "type": "object",
-        "required": [
-          "code"
-        ],
-        "title": "FileUploadResponse",
-        "description": "文件上传响应模型"
-      },
-      "HTTPValidationError": {
-        "properties": {
-          "detail": {
-            "items": {
-              "$ref": "#/components/schemas/ValidationError"
-            },
-            "type": "array",
-            "title": "Detail"
-          }
-        },
-        "type": "object",
-        "title": "HTTPValidationError"
-      },
-      "LoginRequest": {
-        "properties": {
-          "username": {
-            "type": "string",
-            "title": "Username"
-          },
-          "password": {
-            "type": "string",
-            "title": "Password"
-          }
-        },
-        "type": "object",
-        "required": [
-          "username",
-          "password"
-        ],
-        "title": "LoginRequest",
-        "description": "登录请求模型"
-      },
-      "Message": {
-        "properties": {
-          "role": {
-            "type": "string",
-            "title": "Role",
-            "description": "消息角色，如 assistant 或 user"
-          },
-          "content": {
-            "type": "string",
-            "title": "Content",
-            "description": "消息内容"
-          }
-        },
-        "type": "object",
-        "required": [
-          "role",
-          "content"
-        ],
-        "title": "Message"
-      },
-      "PasswordChangeRequest": {
-        "properties": {
-          "current_password": {
-            "type": "string",
-            "title": "Current Password"
-          },
-          "new_password": {
-            "type": "string",
-            "title": "New Password"
-          }
-        },
-        "type": "object",
-        "required": [
-          "current_password",
-          "new_password"
-        ],
-        "title": "PasswordChangeRequest",
-        "description": "密码修改请求模型"
-      },
-      "QuoteItem": {
-        "properties": {
-          "dataset_id": {
-            "type": "string",
-            "title": "Dataset Id",
-            "description": "数据集ID"
-          },
-          "id": {
-            "type": "string",
-            "title": "Id",
-            "description": "项目ID"
-          },
-          "q": {
-            "type": "string",
-            "title": "Q",
-            "description": "问题"
-          },
-          "a": {
-            "type": "string",
-            "title": "A",
-            "description": "答案"
-          },
-          "source": {
-            "type": "string",
-            "title": "Source",
-            "description": "来源"
-          }
-        },
-        "type": "object",
-        "required": [
-          "dataset_id",
-          "id",
-          "q",
-          "a",
-          "source"
-        ],
-        "title": "QuoteItem",
-        "description": "引用项"
-      },
-      "ResponseDataModule": {
-        "properties": {
-          "moduleName": {
-            "type": "string",
-            "title": "Modulename",
-            "description": "模块名称"
-          },
-          "price": {
-            "anyOf": [
-              {
-                "type": "number"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Price",
-            "description": "模块价格"
-          },
-          "model": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Model",
-            "description": "使用的模型"
-          },
-          "tokens": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Tokens",
-            "description": "tokens 数量"
-          },
-          "similarity": {
-            "anyOf": [
-              {
-                "type": "number"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Similarity",
-            "description": "相似度"
-          },
-          "limit": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Limit",
-            "description": "限制数量"
-          },
-          "question": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Question",
-            "description": "问题"
-          },
-          "answer": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Answer",
-            "description": "答案"
-          },
-          "maxToken": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Maxtoken",
-            "description": "最大 token 数"
-          },
-          "quoteList": {
-            "anyOf": [
-              {
-                "items": {
-                  "$ref": "#/components/schemas/QuoteItem"
-                },
-                "type": "array"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Quotelist",
-            "description": "引用列表"
-          },
-          "completeMessages": {
-            "anyOf": [
-              {
-                "items": {
-                  "$ref": "#/components/schemas/CompleteMessage"
-                },
-                "type": "array"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Completemessages",
-            "description": "完整消息列表"
-          },
-          "runningTime": {
-            "anyOf": [
-              {
-                "type": "number"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Runningtime",
-            "description": "运行时间"
-          },
-          "totalPoints": {
-            "anyOf": [
-              {
-                "type": "number"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Totalpoints",
-            "description": "总点数"
-          },
-          "inputTokens": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Inputtokens",
-            "description": "输入 tokens"
-          },
-          "outputTokens": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Outputtokens",
-            "description": "输出 tokens"
-          },
-          "reasoningText": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Reasoningtext",
-            "description": "推理文本"
-          },
-          "historyPreview": {
-            "anyOf": [
-              {
-                "items": {
-                  "additionalProperties": {
-                    "type": "string"
-                  },
-                  "type": "object"
-                },
-                "type": "array"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Historypreview",
-            "description": "历史预览"
-          },
-          "contextTotalLen": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Contexttotallen",
-            "description": "上下文总长度"
-          },
-          "finishReason": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Finishreason",
-            "description": "完成原因"
-          },
-          "nodeId": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Nodeid",
-            "description": "节点ID"
-          },
-          "moduleType": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Moduletype",
-            "description": "模块类型"
-          },
-          "id": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Id",
-            "description": "模块ID"
-          }
-        },
-        "type": "object",
-        "required": [
-          "moduleName"
-        ],
-        "title": "ResponseDataModule",
-        "description": "响应数据模块 - FastGPT detail=true 时的模块信息"
-      },
-      "Token": {
-        "properties": {
-          "access_token": {
-            "type": "string",
-            "title": "Access Token"
-          },
-          "token_type": {
-            "type": "string",
-            "title": "Token Type",
-            "default": "bearer"
-          },
-          "expires_in": {
-            "type": "integer",
-            "title": "Expires In"
-          },
-          "user": {
-            "$ref": "#/components/schemas/UserResponse"
-          }
-        },
-        "type": "object",
-        "required": [
-          "access_token",
-          "expires_in",
-          "user"
-        ],
-        "title": "Token",
-        "description": "JWT令牌模型"
-      },
-      "UnifiedChatResponse": {
-        "properties": {
-          "id": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Id",
-            "description": "会话ID"
-          },
-          "model": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Model",
-            "description": "使用的模型名称"
-          },
-          "usage": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/Usage"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "description": "tokens 使用情况"
-          },
-          "choices": {
-            "anyOf": [
-              {
-                "items": {
-                  "$ref": "#/components/schemas/Choice"
-                },
-                "type": "array"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Choices",
-            "description": "响应选项列表"
-          },
-          "responseData": {
-            "anyOf": [
-              {
-                "items": {
-                  "$ref": "#/components/schemas/ResponseDataModule"
-                },
-                "type": "array"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Responsedata",
-            "description": "详细的模块响应数据"
-          },
-          "newVariables": {
-            "anyOf": [
-              {
-                "additionalProperties": true,
-                "type": "object"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Newvariables",
-            "description": "新变量"
-          }
-        },
-        "type": "object",
-        "title": "UnifiedChatResponse",
-        "description": "统一聊天响应格式 - 支持两种模式"
-      },
-      "Usage": {
-        "properties": {
-          "prompt_tokens": {
-            "type": "integer",
-            "title": "Prompt Tokens",
-            "description": "提示词 tokens 数"
-          },
-          "completion_tokens": {
-            "type": "integer",
-            "title": "Completion Tokens",
-            "description": "生成 tokens 数"
-          },
-          "total_tokens": {
-            "type": "integer",
-            "title": "Total Tokens",
-            "description": "总 tokens 数"
-          }
-        },
-        "type": "object",
-        "required": [
-          "prompt_tokens",
-          "completion_tokens",
-          "total_tokens"
-        ],
-        "title": "Usage"
-      },
-      "UserCreate": {
-        "properties": {
-          "username": {
-            "type": "string",
-            "maxLength": 50,
-            "minLength": 3,
-            "title": "Username",
-            "description": "用户名"
-          },
-          "email": {
-            "type": "string",
-            "format": "email",
-            "title": "Email",
-            "description": "邮箱地址"
-          },
-          "full_name": {
-            "anyOf": [
-              {
-                "type": "string",
-                "maxLength": 100
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Full Name",
-            "description": "全名"
-          },
-          "role": {
-            "$ref": "#/components/schemas/UserRole",
-            "description": "用户角色",
-            "default": "user"
-          },
-          "status": {
-            "$ref": "#/components/schemas/UserStatus",
-            "description": "用户状态",
-            "default": "active"
-          },
-          "password": {
-            "type": "string",
-            "minLength": 6,
-            "title": "Password",
-            "description": "密码"
-          }
-        },
-        "type": "object",
-        "required": [
-          "username",
-          "email",
-          "password"
-        ],
-        "title": "UserCreate",
-        "description": "创建用户模型"
-      },
-      "UserResponse": {
-        "properties": {
-          "username": {
-            "type": "string",
-            "maxLength": 50,
-            "minLength": 3,
-            "title": "Username",
-            "description": "用户名"
-          },
-          "email": {
-            "type": "string",
-            "format": "email",
-            "title": "Email",
-            "description": "邮箱地址"
-          },
-          "full_name": {
-            "anyOf": [
-              {
-                "type": "string",
-                "maxLength": 100
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Full Name",
-            "description": "全名"
-          },
-          "role": {
-            "$ref": "#/components/schemas/UserRole",
-            "description": "用户角色",
-            "default": "user"
-          },
-          "status": {
-            "$ref": "#/components/schemas/UserStatus",
-            "description": "用户状态",
-            "default": "active"
-          },
-          "id": {
-            "type": "string",
-            "title": "Id"
-          },
-          "created_at": {
-            "type": "string",
-            "format": "date-time",
-            "title": "Created At"
-          },
-          "updated_at": {
-            "type": "string",
-            "format": "date-time",
-            "title": "Updated At"
-          },
-          "last_login": {
-            "anyOf": [
-              {
-                "type": "string",
-                "format": "date-time"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Last Login"
-          },
-          "api_calls_count": {
-            "type": "integer",
-            "title": "Api Calls Count"
-          },
-          "max_api_calls": {
-            "type": "integer",
-            "title": "Max Api Calls"
-          }
-        },
-        "type": "object",
-        "required": [
-          "username",
-          "email",
-          "id",
-          "created_at",
-          "updated_at",
-          "api_calls_count",
-          "max_api_calls"
-        ],
-        "title": "UserResponse",
-        "description": "用户响应模型"
-      },
-      "UserRole": {
-        "type": "string",
-        "enum": [
-          "admin",
-          "user",
-          "premium"
-        ],
-        "title": "UserRole",
-        "description": "用户角色枚举"
-      },
-      "UserStats": {
-        "properties": {
-          "total_users": {
-            "type": "integer",
-            "title": "Total Users"
-          },
-          "active_users": {
-            "type": "integer",
-            "title": "Active Users"
-          },
-          "admin_users": {
-            "type": "integer",
-            "title": "Admin Users"
-          },
-          "premium_users": {
-            "type": "integer",
-            "title": "Premium Users"
-          }
-        },
-        "type": "object",
-        "required": [
-          "total_users",
-          "active_users",
-          "admin_users",
-          "premium_users"
-        ],
-        "title": "UserStats",
-        "description": "用户统计信息"
-      },
-      "UserStatus": {
-        "type": "string",
-        "enum": [
-          "active",
-          "inactive",
-          "suspended"
-        ],
-        "title": "UserStatus",
-        "description": "用户状态枚举"
-      },
-      "UserUpdate": {
-        "properties": {
-          "username": {
-            "anyOf": [
-              {
-                "type": "string",
-                "maxLength": 50,
-                "minLength": 3
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Username"
-          },
-          "email": {
-            "anyOf": [
-              {
-                "type": "string",
-                "format": "email"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Email"
-          },
-          "full_name": {
-            "anyOf": [
-              {
-                "type": "string",
-                "maxLength": 100
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Full Name"
-          },
-          "role": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/UserRole"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "status": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/UserStatus"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "password": {
-            "anyOf": [
-              {
-                "type": "string",
-                "minLength": 6
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Password"
-          }
-        },
-        "type": "object",
-        "title": "UserUpdate",
-        "description": "更新用户模型"
-      },
-      "ValidationError": {
-        "properties": {
-          "loc": {
-            "items": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "integer"
-                }
-              ]
-            },
-            "type": "array",
-            "title": "Location"
-          },
-          "msg": {
-            "type": "string",
-            "title": "Message"
-          },
-          "type": {
-            "type": "string",
-            "title": "Error Type"
-          }
-        },
-        "type": "object",
-        "required": [
-          "loc",
-          "msg",
-          "type"
-        ],
-        "title": "ValidationError"
-      }
-    },
-    "securitySchemes": {
-      "HTTPBearer": {
-        "type": "http",
-        "scheme": "bearer"
-      }
-    }
-  }
+    "schemas": {},
+    "securitySchemes": {}
+  },
+  "servers": []
 }

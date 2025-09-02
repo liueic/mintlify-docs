@@ -1,0 +1,134 @@
+---
+title: '用户登录'
+openapi: 'POST /api/v1/login'
+---
+
+## 概述
+
+用户登录接口用于获取访问令牌（access token），该令牌用于后续API调用的身份验证。
+
+## 认证方式
+
+该接口不需要预先的认证信息，使用用户名和密码进行登录。
+
+## 请求参数
+
+### 请求体
+
+<ParamField body="username" type="string" required>
+用户的用户名
+</ParamField>
+
+<ParamField body="password" type="string" required>
+用户的密码
+</ParamField>
+
+## 响应说明
+
+### 成功响应
+
+登录成功后，系统会返回访问令牌和用户信息。
+
+### 响应字段说明
+
+<ParamField response="access_token" type="string" required>
+访问令牌，用于后续API调用的身份验证
+</ParamField>
+
+<ParamField response="token_type" type="string" required>
+令牌类型，通常为"bearer"
+</ParamField>
+
+<ParamField response="expires_in" type="integer" required>
+令牌有效期（秒）
+</ParamField>
+
+<ParamField response="user" type="object" required>
+用户信息对象
+</ParamField>
+
+<ParamField response="user.id" type="string" required>
+用户唯一标识符
+</ParamField>
+
+<ParamField response="user.username" type="string" required>
+用户名
+</ParamField>
+
+<ParamField response="user.role" type="string" required>
+用户角色
+</ParamField>
+
+<ParamField response="user.status" type="string" required>
+用户状态
+</ParamField>
+
+<ParamField response="user.created_at" type="string" required>
+用户创建时间
+</ParamField>
+
+<ParamField response="user.updated_at" type="string" required>
+用户信息更新时间
+</ParamField>
+
+<ParamField response="user.last_login" type="string" required>
+最后登录时间
+</ParamField>
+
+<ParamField response="user.api_calls_count" type="integer" required>
+API调用次数统计
+</ParamField>
+
+<ParamField response="user.max_api_calls" type="integer" required>
+最大API调用次数限制
+</ParamField>
+
+## 使用示例
+
+### 用户登录
+
+```bash
+curl -X POST 'https://your-domain.com/api/v1/login' \\
+  -H 'Content-Type: application/json' \\
+  -d '{
+    "username": "your_username",
+    "password": "your_password"
+  }'
+```
+
+### 响应示例
+
+```json
+{
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "token_type": "bearer",
+  "expires_in": 3600,
+  "user": {
+    "id": "user_123456",
+    "username": "example_user",
+    "role": "user",
+    "status": "active",
+    "created_at": "2024-01-01T00:00:00Z",
+    "updated_at": "2024-01-15T12:00:00Z",
+    "last_login": "2024-01-15T12:00:00Z",
+    "api_calls_count": 150,
+    "max_api_calls": 1000
+  }
+}
+```
+
+## 使用令牌
+
+登录成功后，您需要在后续API请求的Header中包含访问令牌：
+
+```bash
+-H 'Authorization: Bearer your_access_token'
+```
+
+## 安全建议
+
+1. **令牌存储**：安全存储访问令牌，避免泄露
+2. **令牌刷新**：在令牌过期前重新登录获取新令牌
+3. **密码安全**：使用强密码并定期更换
+4. **HTTPS**：始终通过HTTPS协议进行登录请求
+5. **错误处理**：妥善处理登录失败的情况

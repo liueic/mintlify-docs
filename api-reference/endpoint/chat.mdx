@@ -1,0 +1,122 @@
+---
+title: '聊天接口'
+openapi: 'POST /api/v1/chat'
+---
+
+## 概述
+
+聊天接口是AI Gateway的核心功能，支持多种AI Agent（如FastGPT和Dify）的统一调用。该接口支持流式传输和详细输出模式。
+
+## 认证方式
+
+该接口需要以下认证信息：
+
+### Header参数
+
+<ParamField header="Agent" type="string" required>
+使用的后端Agent名称，例如：`fastgpt` 或 `dify`
+</ParamField>
+
+<ParamField header="Authorization" type="string" required>
+API密钥，格式为：`Bearer your_api_key`
+</ParamField>
+
+## 请求参数
+
+### 请求体
+
+<ParamField body="app_id" type="string" required>
+对于FastGPT来说，这是必填项。应用的唯一标识符。
+</ParamField>
+
+<ParamField body="chat_id" type="string" required>
+对话ID，用来控制对话的上下文。
+</ParamField>
+
+<ParamField body="stream" type="boolean" required>
+是否启用流式传输。设置为`true`时，响应将以流式形式返回。
+</ParamField>
+
+<ParamField body="detail" type="boolean" required>
+是否输出详细内容。设置为`true`时，将返回更详细的响应信息。
+</ParamField>
+
+<ParamField body="query" type="string" required>
+用户输入的查询内容。
+</ParamField>
+
+<ParamField body="conversation_id" type="string" required>
+用于Dify的上下文控制。对于Dify Agent，这是必填项。
+</ParamField>
+
+<ParamField body="files" type="array" required>
+文件URL列表，用于上传文件到对话中。
+</ParamField>
+
+## 响应示例
+
+### 成功响应
+
+```json
+{
+  "object": "chat.completion",
+  "created": 1700000000,
+  "model": "gpt-3.5-turbo",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "这是AI助手的回复内容"
+      },
+      "finish_reason": null
+    }
+  ]
+}
+```
+
+## 使用示例
+
+### 基本聊天请求
+
+```bash
+curl -X POST 'https://your-domain.com/api/v1/chat' \\
+  -H 'Agent: fastgpt' \\
+  -H 'Authorization: Bearer your_api_key' \\
+  -H 'Content-Type: application/json' \\
+  -d '{
+    "app_id": "your_app_id",
+    "chat_id": "unique_chat_id",
+    "stream": false,
+    "detail": false,
+    "query": "你好，请介绍一下这个功能",
+    "conversation_id": "",
+    "files": []
+  }'
+```
+
+### 流式响应请求
+
+```bash
+curl -X POST 'https://your-domain.com/api/v1/chat' \\
+  -H 'Agent: dify' \\
+  -H 'Authorization: Bearer your_api_key' \\
+  -H 'Content-Type: application/json' \\
+  -d '{
+    "app_id": "",
+    "chat_id": "unique_chat_id",
+    "stream": true,
+    "detail": false,
+    "query": "请详细解释这个概念",
+    "conversation_id": "dify_conversation_id",
+    "files": []
+  }'
+```
+
+## 注意事项
+
+1. **Agent选择**：根据您的需求选择合适的Agent（`fastgpt`或`dify`）
+2. **参数验证**：确保所有必填参数都已正确提供
+3. **流式传输**：启用流式传输时，客户端需要正确处理SSE（Server-Sent Events）
+4. **文件上传**：上传文件时，确保文件URL是公开可访问的
+5. **上下文管理**：合理使用`chat_id`和`conversation_id`来维护对话上下文

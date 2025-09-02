@@ -39,24 +39,62 @@ AI Gateway 支持通过请求头中的 `Agent` 参数来指定使用的AI平台�
 
 <Card
   title="查看聊天接口详情"
-  icon="message-circle"
-  href="/api-reference/endpoint/create"
+  icon="message"
+  href="/api-reference/endpoint/chat"
 >
   了解完整的请求参数和响应格式
 </Card>
 
-### 文件上传接口
+### Agent管理
 
-**端点**: `POST /api/v1/upload`
+**端点**: `GET /api/v1/agents`
+
+获取当前系统中所有可用的AI Agent列表，包括每个Agent的详细信息和支持的功能。
+
+<Card
+  title="查看Agent列表"
+  icon="robot"
+  href="/api-reference/endpoint/agents"
+>
+  了解支持的Agent类型和功能特性
+</Card>
+
+### 用户认证
+
+**端点**: `POST /api/v1/login`
+
+用户登录接口，用于获取访问令牌进行身份验证。
+
+<Card
+  title="用户登录"
+  icon="user"
+  href="/api-reference/endpoint/login"
+>
+  了解登录流程和令牌使用
+</Card>
+
+### API密钥管理
+
+**端点**: `POST /api/v1/api-keys`
+
+创建新的API密钥，用于程序化的API访问。
+
+<Card
+  title="创建API密钥"
+  icon="key"
+  href="/api-reference/endpoint/api-keys"
+>
+  了解如何创建和管理API密钥
+</Card>
 
 支持文件上传到对象存储服务，返回文件访问URL。
 
 <Card
-  title="查看文件上传接口详情"
+  title="文件上传接口"
   icon="upload"
-  href="/api-reference/endpoint/webhook"
+  href="/api-reference/endpoint/upload"
 >
-  了解支持的文件类型和上传限制
+  了解如何上传文件到系统，支持多种文件类型
 </Card>
 
 ### 支持的Agent查询
