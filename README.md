@@ -1,6 +1,6 @@
-# Mintlify Starter Kit
+# AI Gateway Documentation
 
-Use the starter kit to get your docs deployed and ready to customize.
+AI Gateway 多Agent统一接口平台文档站点，基于Mintlify构建。
 
 Click the green **Use this template** button at the top of this repo to copy the Mintlify starter kit. The starter kit contains examples with
 
