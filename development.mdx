@@ -54,37 +54,154 @@ source .venv/bin/activate  # Linux/macOS
 ### 3. 启动开发服务器
 
 ```bash
-# 启动开发服务器
-uv run uvicorn main:app --host 0.0.0.0 --port 3000 --reload
+# 启动开发服务器（与 Makefile 保持一致）
+make run
 ```
 
 <Check>
-开发服务器启动后，访问 http://localhost:3000 查看API文档
+开发服务器启动后，访问 http://localhost:8000 查看API文档
 </Check>
+
+### 使用 Makefile 进行本地调试
+
+如果你更偏好通过 Makefile 管理开发与调试流程，项目内置了常用的一站式命令：
+
+```bash
+# 查看所有可用命令
+make help
+```
+
+<Steps>
+<Step title="安装与环境同步">
+
+```bash
+# 安装生产/开发/测试/文档依赖（按需选择其一）
+make install
+make install-dev
+make install-test
+make install-docs
+
+# 同步锁定依赖到虚拟环境
+make sync-deps
+```
+
+<Info>
+需要已安装 uv，且已在项目根目录执行命令。
+</Info>
+</Step>
+
+<Step title="认证系统初始化（可选）">
+
+```bash
+# 初始化 .env 与依赖，并检查本机 MongoDB 环境
+make setup-auth
+
+# 创建管理员用户（需先完成 setup-auth）
+make create-admin
+```
+
+<Tip>
+未设置 JWT_SECRET_KEY 时，系统会自动生成安全密钥。若需固定密钥，可在 `.env` 中设置。
+</Tip>
+</Step>
+
+<Step title="启动与构建">
+
+```bash
+# 启动开发服务器（支持热重载）
+make run
+
+# 启动生产服务器
+make run-prod
+
+# 构建项目发行物
+make build
+```
+</Step>
+
+<Step title="测试与质量">
+
+```bash
+# 运行测试 / 生成覆盖率报告
+make test
+make test-cov
+
+# 代码检查与格式化
+make lint
+make format
+```
+</Step>
+
+<Step title="API 与文档">
+
+```bash
+# 生成 OpenAPI 规范文件 openapi.json（基于运行时 app.openapi()）
+make openapi
+
+# 构建文档（Mintlify 站点）
+make docs
+```
+
+<Check>
+完成后可在 `openapi.json` 中查看接口规范；文档构建产物位于站点输出目录。
+</Check>
+</Step>
+
+<Step title="调试认证与 API Key（可选）">
+
+```bash
+# 在另一个终端先执行 make run 启动服务后，再运行以下命令
+make test-auth
+make test-api-keys
+```
+
+<Warning>
+上述两个命令会提示“等待服务启动后按任意键继续…”。若在 CI 或无人值守环境，请避免使用，或改为直接运行对应的 Python 测试脚本。
+</Warning>
+</Step>
+</Steps>
+
+<AccordionGroup>
+<Accordion title="更多常用命令">
+
+```bash
+# 清理构建与缓存
+make clean
+
+# 依赖升级与同步
+make update-deps
+
+# 预提交检查与安装钩子
+make pre-commit
+make install-hooks
+
+# 打印项目信息
+make info
+```
+
+</Accordion>
+</AccordionGroup>
 
 ## 开发工具
 
 ### 代码格式化
 
-AI Gateway 使用black和isort进行代码格式化：
+AI Gateway 使用 black 和 isort 进行格式化。可直接使用 Makefile：
 
 ```bash
-# 格式化代码
-uv run black .
-uv run isort .
+# 一键格式化
+make format
 
-# 检查代码格式
-uv run black --check .
-uv run isort --check-only .
+# 代码检查（flake8 + mypy）
+make lint
 ```
 
 ### 类型检查
 
-使用mypy进行类型检查：
+使用 mypy 进行类型检查，可通过 `make lint` 统一执行，或单独运行：
 
 ```bash
-# 运行类型检查
-uv run mypy .
+uv run mypy agent/ api/ auth/ services/ database/ models/
 ```
 
 ### 测试
@@ -93,13 +210,13 @@ uv run mypy .
 
 ```bash
 # 运行所有测试
-uv run pytest
+make test
 
-# 运行特定测试文件
-uv run pytest tests/test_fastgpt_agent.py
+# 生成覆盖率报告
+make test-cov
 
-# 生成测试覆盖率报告
-uv run pytest --cov=app tests/
+# 智能体管理 API 测试
+make test-agents
 ```
 
 ## 调试技巧
@@ -113,7 +230,7 @@ uv run pytest --cov=app tests/
 export LOG_LEVEL=DEBUG
 
 # 启动服务
-uv run uvicorn main:app --reload --log-level debug
+make run
 ```
 
 ### 调试模式
@@ -183,7 +300,7 @@ mint dev --port 3333
 </Accordion>
 
 <Accordion title="端口被占用">
-使用其他端口启动服务：`uv run uvicorn main:app --port 3001 --reload`
+开发命令由 Makefile 管理。若需改端口，可直接运行：`uv run uvicorn main:app --port 8001 --reload`
 </Accordion>
 </AccordionGroup>
 

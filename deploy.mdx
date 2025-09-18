@@ -71,64 +71,78 @@ docker run -d \
 创建 `docker-compose.yml` 文件：
 
 ```yaml
-version: '3.8'
-
 services:
-  ai-gateway:
-    build: .
-    container_name: ai-gateway
-    ports:
-      - "3000:3000"
-    env_file:
-      - .env
+  app:
+    image: ghcr.io/liueic/pancrepal-xiaoyibao:latest
+    container_name: pancrepal-app
     restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      # 数据库连接（容器内指向 mongo 服务）
+      MONGO_URI: ${MONGO_URI:-mongodb://mongo:27017}
+      MONGO_DATABASE: ${MONGO_DATABASE:-ai-gateway}
+      # 下列平台密钥建议在宿主机/CI 以环境变量注入
+      # DIFY_BASE_URL: ${DIFY_BASE_URL}
+      # DIFY_API_KEY: ${DIFY_API_KEY}
+      # FASTGPT_BASE_URL: ${FASTGPT_BASE_URL}
+      # FASTGPT_API_KEY: ${FASTGPT_API_KEY}
+    depends_on:
+      mongo:
+        condition: service_healthy
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8000/health"]
       interval: 30s
-      timeout: 10s
-      retries: 3
+      timeout: 5s
+      retries: 5
+    networks:
+      - app-net
+
+  mongo:
+    image: mongo:7
+    container_name: pancrepal-mongo
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
     volumes:
-      - ./logs:/app/logs
+      - mongo-data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok" ]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+    networks:
+      - app-net
+
+volumes:
+  mongo-data:
+
+networks:
+  app-net:
 ```
 
 启动服务：
 
 ```bash
 # 启动服务
-docker-compose up -d
+docker compose up -d
 
 # 查看日志
-docker-compose logs -f ai-gateway
+docker compose logs -f ai-gateway
 
 # 停止服务
-docker-compose down
-```
-
-### 使用Docker Swarm
-
-```bash
-# 初始化Swarm
-docker swarm init
-
-# 部署服务
-docker stack deploy -c docker-compose.yml ai-gateway
-
-# 查看服务状态
-docker service ls
-
-# 查看服务日志
-docker service logs ai-gateway_ai-gateway
+docker compose down
 ```
 
 ## 配置说明
 
 ### 端口配置
 
-默认情况下，AI Gateway 监听3000端口。您可以通过修改 `docker run` 命令中的端口映射来更改：
+默认情况下，AI Gateway 监听8000端口。您可以通过修改 `docker run` 命令中的端口映射来更改：
 
 ```bash
 # 使用其他端口
-docker run -d -p 8080:3000 --env-file .env ai-gateway
+docker run -d -p 8080:8000 --env-file .env pancrepal-app
 ```
 
 ### 环境变量
@@ -152,7 +166,7 @@ AI Gateway 提供健康检查端点：
 
 ```bash
 # 检查服务状态
-curl http://localhost:3000/health
+curl http://localhost:8000/health
 
 # 预期响应
 {
@@ -167,23 +181,23 @@ curl http://localhost:3000/health
 
 ```bash
 # 查看容器日志
-docker logs ai-gateway
+docker logs pancrepal-app
 
 # 实时查看日志
-docker logs -f ai-gateway
+docker logs -f pancrepal-app
 
 # 查看最近100行日志
-docker logs --tail 100 ai-gateway
+docker logs --tail 100 pancrepal-app
 ```
 
 ### 性能监控
 
 ```bash
 # 查看容器资源使用情况
-docker stats ai-gateway
+docker stats pancrepal-app
 
 # 进入容器进行调试
-docker exec -it ai-gateway /bin/bash
+docker exec -it pancrepal-app /bin/bash
 ```
 
 ## 更新部署
@@ -195,26 +209,26 @@ docker exec -it ai-gateway /bin/bash
 git pull
 
 # 重新构建镜像
-docker build -t ai-gateway .
+docker build -t pancrepal-app .
 
 # 停止旧容器
-docker stop ai-gateway
+docker stop pancrepal-app
 
 # 删除旧容器
-docker rm ai-gateway
+docker rm pancrepal-app
 
 # 启动新容器
-docker run -d --name ai-gateway -p 3000:3000 --env-file .env ai-gateway
+docker run -d --name pancrepal-app -p 8080:8000 --env-file .env pancrepal-app
 ```
 
 ### 使用Docker Compose更新
 
 ```bash
 # 重新构建并启动
-docker-compose up -d --build
+docker compose up -d --build
 
 # 或者先停止再启动
-docker-compose down
+docker compose down
 docker-compose up -d --build
 ```
 
@@ -243,13 +257,13 @@ docker-compose up -d --build
 docker ps -a
 
 # 查看容器详细信息
-docker inspect ai-gateway
+docker inspect pancrepal-app
 
 # 查看环境变量
-docker exec ai-gateway env
+docker exec pancrepal-app env
 
 # 测试网络连接
-docker exec ai-gateway ping your-ai-platform.com
+docker exec pancrepal-app ping your-ai-platform.com
 ```
 
 <Card
